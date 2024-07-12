@@ -15,9 +15,8 @@ import Animated, {
 import  ExerciseExpanded  from './ExerciseExpanded';
 import { ExerciseModel, getPauseTimeFormatted } from '@/model/ExerciseModel';
 import { MetricModel } from '@/model/MetricModel';
-import { MetricUpdate } from './MetricUpdate';
 
-export default function Exercise({exercise, updateMetricMethod} : {exercise : ExerciseModel,  updateMetricMethod: (metric: MetricModel) => void}) {
+export default function Exercise({exercise, updateMetricMethod} : {exercise : ExerciseModel,  updateMetricMethod: (exercise : ExerciseModel, metric: MetricModel) => void}) {
     const isPressing = useSharedValue(0);
     const expandMetrics = useSharedValue(0);
     const tap = Gesture.Tap()
@@ -32,32 +31,22 @@ export default function Exercise({exercise, updateMetricMethod} : {exercise : Ex
             isPressing.value = 0;
             expandMetrics.value = (expandMetrics.value + 1) % 2;
         }
-    ) 
+    );
     const pressableAnimatedStyle = useAnimatedStyle(() => {
         return {
-            opacity: interpolate(
-                isPressing.value,
-                [0, 1],
-                [1, 0.8]
-            ),
-            shadowColor : interpolateColor(
-                isPressing.value,
-                [0, 1],
-                ['black', 'transparent']
-            ),
-            elevation : interpolate(
-                isPressing.value,
-                [0, 1],
-                [5, 0]
-            )
+            opacity: interpolate(isPressing.value, [0, 1], [1, 0.8]),
+            shadowColor : interpolateColor(isPressing.value, [0, 1], ['black', 'transparent']),
+            elevation : interpolate(isPressing.value, [0, 1], [5, 0])
         }
     });
     const expandMetricsAnimatedStyle = useAnimatedStyle(() => {
-        console.log(expandMetrics.value)
         return {
             height: withTiming(expandMetrics.value*40),
         }
     });
+    const updateMetric = (metric: MetricModel) => {
+        updateMetricMethod(exercise, metric);
+    } 
     return (
         <>
             <GestureDetector gesture={tap}>
@@ -72,7 +61,7 @@ export default function Exercise({exercise, updateMetricMethod} : {exercise : Ex
                 </Animated.View>
             </GestureDetector>
             <Animated.View style={[{marginBottom: 10}, expandMetricsAnimatedStyle]}>
-                <ExerciseExpanded metrics={exercise.metrics} updateMetricMethod={updateMetricMethod}/>
+                <ExerciseExpanded metrics={exercise.metrics} updateMetricMethod={updateMetric}/>
             </Animated.View>
         </>
     )

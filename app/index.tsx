@@ -15,19 +15,16 @@ const Tab = createBottomTabNavigator();
 
 export default function index() {
 	return (
-		<React.StrictMode>
-			<GestureHandlerRootView>
-				<View style={indexStyle.body}>
-					<Tab.Navigator
-						screenOptions={{
-							headerShown: false
-						}}>
-						<Tab.Screen name="Home" component={Session} />
-						<Tab.Screen name="Profile" component={Profile} />
-					</Tab.Navigator>
-				</View>
-			</GestureHandlerRootView>
-		</React.StrictMode>
-
+		<GestureHandlerRootView>
+			<View style={indexStyle.body}>
+				<Tab.Navigator
+					screenOptions={{
+						headerShown: false
+					}}>
+					<Tab.Screen name="Home" component={Session} />
+					<Tab.Screen name="Profile" component={Profile} />
+				</Tab.Navigator>
+			</View>
+		</GestureHandlerRootView>
 	)
 }

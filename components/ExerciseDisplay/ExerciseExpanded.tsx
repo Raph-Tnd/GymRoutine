@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import ExerciseExpandedStyle from '@/style/ExerciseDisplay/ExerciseExpandedStyle'
 import React from 'react'
-import Metric from './Metric'
+import Metric from './MetricDisplay/Metric'
 import { MetricModel } from '@/model/MetricModel'
 import { FlatList } from 'react-native-gesture-handler'
 

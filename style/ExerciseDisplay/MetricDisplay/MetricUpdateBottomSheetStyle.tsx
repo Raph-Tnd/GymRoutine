@@ -1,11 +1,12 @@
-import { Dimensions, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
+import { Colors } from '../../Colors';
 
 export default StyleSheet.create({
     sheet: {
-        backgroundColor: 'red',
+        backgroundColor: Colors.seasalt,
         padding: 16,
         height: 300,
-        width: Dimensions.get("window").width,
+        width: "100%",
         position: 'absolute',
         bottom: 0,
         borderTopRightRadius: 20,
@@ -13,7 +14,7 @@ export default StyleSheet.create({
         zIndex: 2,
         alignItems: 'center',
         justifyContent: 'center',
-      },
+	},
     backdrop: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -21,4 +22,4 @@ export default StyleSheet.create({
     backdropTouch: {
         flex: 1,
     }
-  });
+});

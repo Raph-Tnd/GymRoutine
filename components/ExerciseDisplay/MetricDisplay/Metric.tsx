@@ -1,6 +1,6 @@
 import { Text, Pressable } from 'react-native'
 import React from 'react'
-import MetricStyle from '@/style/ExerciseDisplay/MetricStyle'
+import MetricStyle from '@/style/ExerciseDisplay/MetricDisplay/MetricStyle'
 import { MetricModel } from '@/model/MetricModel'
 
 export default function Metric({metric , updateMetricMethod} : {metric: MetricModel, updateMetricMethod: (metric: MetricModel) => void}) {
