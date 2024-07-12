@@ -7,14 +7,16 @@ export interface MetricModel {
 export function metricPossibleValue(metric : MetricModel) : number[] {
 	switch (metric.name) {
 		case 'RPE':
-		return [5.10];
+		return createRange(5,10);
 		case 'Pain':
-			return [1.10];
+			return createRange(1,10);
 		default:
 			return [];
 	}
 
 }
+
+const createRange = (start: number, end: number): number[] => [...Array(end - start + 1).keys()].map(i => i + start);
 
 function validateMetric(metric: MetricModel): boolean {
 	if (metric.value === null) return true;

@@ -1,12 +1,11 @@
 import { ExerciseModel } from "@/model/ExerciseModel";
 import { MetricModel } from "@/model/MetricModel";
 import MetricUpdateBottomSheetStyme from "@/style/ExerciseDisplay/MetricDisplay/MetricUpdateBottomSheetStyle";
-import { useEffect } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import Animated, { SharedValue, useAnimatedStyle, useDerivedValue, useSharedValue, withDelay, withTiming } from "react-native-reanimated";
 import MetricUpdate from "./MetricUpdate";
 
-export function MetricUpdateBottomSheet({exerciseToUpdate, metricToUpdate, isOpen, toggleSheet, duration = 500} : {exerciseToUpdate: ExerciseModel, metricToUpdate: MetricModel, isOpen : SharedValue<boolean>, toggleSheet : () => void, duration? : number}) {
+export function MetricUpdateBottomSheet({exerciseToUpdate, metricToUpdate, isOpen, toggleSheet, duration = 250, onUpdateMethod} : {exerciseToUpdate: ExerciseModel, metricToUpdate: MetricModel, isOpen : SharedValue<boolean>, toggleSheet : () => void, duration? : number, onUpdateMethod : (exercise: ExerciseModel) => void}) {
     const height = useSharedValue(0);
     const progress = useDerivedValue(() =>
         withTiming(isOpen.value ? 0 : 1, { duration })
@@ -18,9 +17,10 @@ export function MetricUpdateBottomSheet({exerciseToUpdate, metricToUpdate, isOpe
         opacity: 1 - progress.value,
         zIndex: isOpen.value ? 1 : withDelay(duration, withTiming(-1, { duration: 0 })),
     }));
-    useEffect(() => {
-        console.log(isOpen.value);
-    })
+    const updateMetricOnExercise = (metric : MetricModel) => {
+        exerciseToUpdate.metrics[exerciseToUpdate.metrics.findIndex(x => x.name === metric.name)] = metric;
+        onUpdateMethod(exerciseToUpdate);
+    };
     return (
         <>
             <Animated.View style={[MetricUpdateBottomSheetStyme.backdrop, backdropStyle]}>
@@ -36,8 +36,8 @@ export function MetricUpdateBottomSheet({exerciseToUpdate, metricToUpdate, isOpe
                 }}
                 style={[MetricUpdateBottomSheetStyme.sheet, sheetStyle]}
             >
-                <Text>{metricToUpdate.name}</Text>
-                <MetricUpdate metric={metricToUpdate}/>
+                <Text style={MetricUpdateBottomSheetStyme.name}>{metricToUpdate.name}</Text>
+                <MetricUpdate metric={metricToUpdate} updateMethod={updateMetricOnExercise}/>
                 
             </Animated.View>
         </>

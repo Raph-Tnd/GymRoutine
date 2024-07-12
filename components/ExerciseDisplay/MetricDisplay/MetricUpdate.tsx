@@ -4,8 +4,12 @@ import { FlatList } from 'react-native-gesture-handler';
 import MetricChoiceButton from './MetricChoiceButton';
 import MetricUpdateStyle from '@/style/ExerciseDisplay/MetricDisplay/MetricUpdateStyle';
 
-export default function MetricUpdate({metric} : {metric: MetricModel}) {
+export default function MetricUpdate({metric, updateMethod} : {metric: MetricModel, updateMethod: (metric : MetricModel) => void}) {
     const metricChoices = metricPossibleValue(metric);
+    const updateMetric = (value : number) => {
+        metric.value = value;
+        updateMethod(metric);
+    }
     return (
         <>
             {
@@ -13,8 +17,9 @@ export default function MetricUpdate({metric} : {metric: MetricModel}) {
                 <FlatList
                     style={MetricUpdateStyle.numberListContainer}
                     contentContainerStyle={MetricUpdateStyle.numberList}
+                    numColumns={5}
                     data={metricChoices}
-                    renderItem={({item}) => <MetricChoiceButton choice={item}/>}
+                    renderItem={({item}) => <MetricChoiceButton choice={item} updateMethod={updateMetric}/>}
                 />
             }
         </>

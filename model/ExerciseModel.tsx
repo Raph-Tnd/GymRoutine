@@ -22,4 +22,11 @@ export function getPauseTimeFormatted(exercise: ExerciseModel): string {
 	} else {
 	  return `${minutes}min${seconds}s`;
 	}
-  }
+}
+
+export function exerciseEquals(ex1 : ExerciseModel, ex2: ExerciseModel): boolean {
+	return ex1.name === ex2.name
+		&& ex1.repsPerSet === ex2.repsPerSet
+		&& ex1.sets === ex2.sets
+		&& ex1.pauseTime === ex2.pauseTime;
+}

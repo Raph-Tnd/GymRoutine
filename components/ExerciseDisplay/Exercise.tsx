@@ -16,7 +16,7 @@ import  ExerciseExpanded  from './ExerciseExpanded';
 import { ExerciseModel, getPauseTimeFormatted } from '@/model/ExerciseModel';
 import { MetricModel } from '@/model/MetricModel';
 
-export default function Exercise({exercise, updateMetricMethod} : {exercise : ExerciseModel,  updateMetricMethod: (exercise : ExerciseModel, metric: MetricModel) => void}) {
+export default function Exercise({exercise, updateMetricMethod} : {exercise : ExerciseModel, updateMetricMethod: (exercise : ExerciseModel, metric: MetricModel) => void}) {
     const isPressing = useSharedValue(0);
     const expandMetrics = useSharedValue(0);
     const tap = Gesture.Tap()

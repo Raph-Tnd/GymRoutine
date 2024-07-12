@@ -7,7 +7,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { MetricUpdateBottomSheet } from './ExerciseDisplay/MetricDisplay/MetricUpdateBottomSheet';
 import { useSharedValue } from 'react-native-reanimated';
 import { MetricModel } from '@/model/MetricModel';
-import { ExerciseModel } from '@/model/ExerciseModel';
+import { ExerciseModel, exerciseEquals } from '@/model/ExerciseModel';
 
 
 export default function Session() {
@@ -22,6 +22,14 @@ export default function Session() {
     };
     const toggleSheet = () => {
         isMetricUpdateOpen.value = !isMetricUpdateOpen.value;
+    };
+    const updateMetric = (exercise : ExerciseModel) => {
+        let tempSession : SessionModel | undefined = currentSession;
+        if(tempSession != undefined){
+            tempSession.exercises[tempSession.exercises.findIndex(x => exerciseEquals(x,exercise))] = exercise;
+            setCurrentSession({...tempSession})
+        }
+        toggleSheet();
     };
     useEffect(()=> {
         if(currentSession === undefined){
@@ -42,7 +50,12 @@ export default function Session() {
                         renderItem={({item}) => <Exercise exercise={item} updateMetricMethod={onUpdateMetricHandler}/>}
                     />
                     <Text>Tools</Text>
-                    <MetricUpdateBottomSheet isOpen={isMetricUpdateOpen} toggleSheet={toggleSheet} exerciseToUpdate={exerciseToUpdate} metricToUpdate={metricToUpdate}/>
+                    <MetricUpdateBottomSheet isOpen={isMetricUpdateOpen}
+                        toggleSheet={toggleSheet} 
+                        exerciseToUpdate={exerciseToUpdate} 
+                        metricToUpdate={metricToUpdate}
+                        onUpdateMethod={updateMetric}
+                    />
                 </>
                 :
                 <View /> /* Button to redirect to a program */
