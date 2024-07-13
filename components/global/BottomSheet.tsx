@@ -1,10 +1,10 @@
 import { ExerciseModel } from "@/model/ExerciseModel";
 import { MetricModel } from "@/model/MetricModel";
-import BottomSheetStyle from "@/style/global/BottomSheetStyle";
+import BottomSheetStyle from "@/style/global/BottomSheet/BottomSheetStyle";
 import { Text, TouchableOpacity } from "react-native";
 import Animated, { SharedValue, useAnimatedStyle, useDerivedValue, useSharedValue, withDelay, withTiming } from "react-native-reanimated";
 
-export function MetricUpdateBottomSheet({isOpen, toggleSheet, duration = 250, children} : {isOpen : SharedValue<boolean>, toggleSheet : () => void, duration? : number, children : React.ReactElement}) {
+export function MetricUpdateBottomSheet({isOpen, toggleSheet, duration = 250, children} : {isOpen : SharedValue<boolean>, toggleSheet : () => void, duration? : number, children? : React.ReactElement}) {
     const height = useSharedValue(0);
     const progress = useDerivedValue(() =>
         withTiming(isOpen.value ? 0 : 1, { duration })

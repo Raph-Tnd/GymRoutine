@@ -15,7 +15,7 @@ export default StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        shadowOffset: {height: 1, width: 1},
+        shadowOffset: {height: 2, width: 2},
         shadowRadius: 5,
     },
     delimiter: {

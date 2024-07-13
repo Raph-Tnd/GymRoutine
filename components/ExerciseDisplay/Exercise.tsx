@@ -57,7 +57,7 @@ export default function Exercise({exercise, callUpdateMetricMethod} : {exercise 
                     <Delimiter/>
                     <Text>{`${exercise.weight}${exercise.weightUnit}`}</Text>
                     <Delimiter/>
-                    <Text>{getPauseTimeFormatted(exercise)}</Text>
+                    <Text>{getPauseTimeFormatted(exercise.pauseTime)}</Text>
                 </Animated.View>
             </GestureDetector>
             <Animated.View style={[{marginBottom: 10}, expandMetricsAnimatedStyle]}>

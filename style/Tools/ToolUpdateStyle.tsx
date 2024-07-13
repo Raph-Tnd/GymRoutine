@@ -25,5 +25,16 @@ export default StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         flexWrap : 'wrap',
+    },
+    number:{
+        textAlign : 'center',
+        backgroundColor: Colors.dim_gray,
+        margin: 7,
+        width: 40,
+        height: 40,
+        borderRadius : 5,
+        justifyContent: 'center',
+        shadowOffset: {height: 2, width: 2},
+        shadowRadius: 3,
     }
 })

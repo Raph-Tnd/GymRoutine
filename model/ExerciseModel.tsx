@@ -11,9 +11,9 @@ export interface ExerciseModel {
 	metrics: MetricModel[];
 }
 
-export function getPauseTimeFormatted(exercise: ExerciseModel): string {
-	const minutes = Math.floor(exercise.pauseTime / 60);
-	const seconds = exercise.pauseTime % 60;
+export function getPauseTimeFormatted(pauseTime: number): string {
+	const minutes = Math.floor(pauseTime / 60);
+	const seconds = pauseTime % 60;
 	
 	if (minutes === 0) {
 	  return `${seconds}s`;

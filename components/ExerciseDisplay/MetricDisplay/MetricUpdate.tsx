@@ -1,9 +1,9 @@
 import React from 'react'
 import { MetricModel, metricPossibleValue } from '@/model/MetricModel'
 import { FlatList } from 'react-native-gesture-handler';
-import MetricChoiceButton from './MetricChoiceButton';
-import MetricUpdateStyle from '@/style/ExerciseDisplay/MetricDisplay/MetricUpdateStyle';
+import MetricChoicePressable from './MetricChoicePressable';
 import { Text } from 'react-native';
+import BottomSheetStyle from '@/style/global/BottomSheet/BottomSheetStyle';
 
 export default function MetricUpdate({metric, updateMethod} : {metric: MetricModel, updateMethod: (metric : MetricModel) => void}) {
     const metricChoices = metricPossibleValue(metric);
@@ -13,15 +13,15 @@ export default function MetricUpdate({metric, updateMethod} : {metric: MetricMod
     }
     return (
         <>
-            <Text style={MetricUpdateStyle.name}>{metric.name}</Text>
+            <Text style={BottomSheetStyle.name}>{metric.name}</Text>
             {
                 metricChoices.length <= 10 &&
                 <FlatList
-                    style={MetricUpdateStyle.numberListContainer}
-                    contentContainerStyle={MetricUpdateStyle.numberList}
+                    style={BottomSheetStyle.numberListContainer}
+                    contentContainerStyle={BottomSheetStyle.numberList}
                     numColumns={5}
                     data={metricChoices}
-                    renderItem={({item}) => <MetricChoiceButton choice={item} updateMethod={updateMetric}/>}
+                    renderItem={({item}) => <MetricChoicePressable choice={item} updateMethod={updateMetric}/>}
                 />
             }
         </>
