@@ -9,6 +9,7 @@ import { useSharedValue } from 'react-native-reanimated';
 import { MetricModel } from '@/model/MetricModel';
 import { ExerciseModel, exerciseEquals } from '@/model/ExerciseModel';
 import MetricUpdate from './ExerciseDisplay/MetricDisplay/MetricUpdate';
+import ToolList from './tools/ToolList';
 
 
 export default function Session() {
@@ -49,9 +50,9 @@ export default function Session() {
                         contentContainerStyle={SessionStyle.exerciseListContainer}
                         style={SessionStyle.exerciseList}
                         data={currentSession.exercises}
-                        renderItem={({item}) => <Exercise exercise={item} updateMetricMethod={onUpdateMetricHandler}/>}
+                        renderItem={({item}) => <Exercise exercise={item} callUpdateMetricMethod={onUpdateMetricHandler}/>}
                     />
-                    <Text>Tools</Text>
+                    <ToolList exerciseTimers={currentSession.exercises.map(ex => ex.pauseTime)}/>
                     {/* Has to be in Session because absolute position inside a scrollview/flatlist isn't working */}
                     <BottomSheet isOpen={isMetricUpdateOpen}
                         toggleSheet={toggleSheet}
