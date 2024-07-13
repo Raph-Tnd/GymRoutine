@@ -4,10 +4,11 @@ import Exercise from './ExerciseDisplay/Exercise'
 import SessionStyle from '@/style/Session/SessionStyle'
 import { SessionModel } from '@/model/SessionModel';
 import { FlatList } from 'react-native-gesture-handler';
-import { MetricUpdateBottomSheet } from './ExerciseDisplay/MetricDisplay/MetricUpdateBottomSheet';
+import { MetricUpdateBottomSheet as BottomSheet } from './global/BottomSheet';
 import { useSharedValue } from 'react-native-reanimated';
 import { MetricModel } from '@/model/MetricModel';
 import { ExerciseModel, exerciseEquals } from '@/model/ExerciseModel';
+import MetricUpdate from './ExerciseDisplay/MetricDisplay/MetricUpdate';
 
 
 export default function Session() {
@@ -15,18 +16,19 @@ export default function Session() {
     const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseModel>({} as ExerciseModel);
     const [metricToUpdate, setMetricToUpdate] = useState<MetricModel>({} as MetricModel);
     const isMetricUpdateOpen = useSharedValue(false);
+    const toggleSheet = () => {
+        isMetricUpdateOpen.value = !isMetricUpdateOpen.value;
+    };
     const onUpdateMetricHandler = (exercise : ExerciseModel, metric: MetricModel) => {
         setExerciseToUpdate(exercise);
         setMetricToUpdate(metric);
         toggleSheet();
     };
-    const toggleSheet = () => {
-        isMetricUpdateOpen.value = !isMetricUpdateOpen.value;
-    };
-    const updateMetric = (exercise : ExerciseModel) => {
+    const updateMetricOnExercise = (metric : MetricModel) => {
+        exerciseToUpdate.metrics[exerciseToUpdate.metrics.findIndex(x => x.name === metric.name)] = metric;
         let tempSession : SessionModel | undefined = currentSession;
         if(tempSession != undefined){
-            tempSession.exercises[tempSession.exercises.findIndex(x => exerciseEquals(x,exercise))] = exercise;
+            tempSession.exercises[tempSession.exercises.findIndex(x => exerciseEquals(x,exerciseToUpdate))] = exerciseToUpdate;
             setCurrentSession({...tempSession})
         }
         toggleSheet();
@@ -50,12 +52,12 @@ export default function Session() {
                         renderItem={({item}) => <Exercise exercise={item} updateMetricMethod={onUpdateMetricHandler}/>}
                     />
                     <Text>Tools</Text>
-                    <MetricUpdateBottomSheet isOpen={isMetricUpdateOpen}
-                        toggleSheet={toggleSheet} 
-                        exerciseToUpdate={exerciseToUpdate} 
-                        metricToUpdate={metricToUpdate}
-                        onUpdateMethod={updateMetric}
-                    />
+                    {/* Has to be in Session because absolute position inside a scrollview/flatlist isn't working */}
+                    <BottomSheet isOpen={isMetricUpdateOpen}
+                        toggleSheet={toggleSheet}
+                    >
+                        <MetricUpdate metric={metricToUpdate} updateMethod={updateMetricOnExercise}/>
+                    </BottomSheet>
                 </>
                 :
                 <View /> /* Button to redirect to a program */
