@@ -1,6 +1,6 @@
 import { ExerciseModel } from "@/model/ExerciseModel";
 import { MetricModel } from "@/model/MetricModel";
-import BottomSheetStyle from "@/style/ExerciseDisplay/MetricDisplay/MetricUpdateBottomSheetStyle";
+import BottomSheetStyle from "@/style/global/BottomSheetStyle";
 import { Text, TouchableOpacity } from "react-native";
 import Animated, { SharedValue, useAnimatedStyle, useDerivedValue, useSharedValue, withDelay, withTiming } from "react-native-reanimated";
 

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { Colors } from '../../Colors';
+import { Colors } from '../Colors';
 import { Font } from '@/style/Font';
 
 export default StyleSheet.create({
@@ -22,15 +22,4 @@ export default StyleSheet.create({
     backdropTouch: {
         flex: 1,
     },
-    name:{
-        textAlign: 'center',
-        borderBottomWidth : 1,
-        borderColor: Colors.dim_gray,
-        paddingBottom: 10,
-        width: "95%",
-        alignSelf: 'center',
-        fontFamily: Font.global,
-        fontSize:  20,
-        fontWeight: 'bold',
-    }
 });
