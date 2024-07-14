@@ -15,8 +15,8 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
     image: {
-        width: 40,
-        height: 40,
+        width: "80%",
+        height: "80%",
     }
 
 });

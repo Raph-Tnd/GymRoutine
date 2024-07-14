@@ -1,3 +1,3 @@
 export const Font = {
-    global: "",
+    global: "WorkSans",
 }

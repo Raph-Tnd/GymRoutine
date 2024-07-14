@@ -3,7 +3,7 @@ import React from 'react'
 import Session from '@/components/Session';
 import Profile from '@/components/Profile';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import SessionStyle from '@/style/Session/SessionStyle';
+import { useFonts } from 'expo-font';
 import { View } from 'react-native';
 import indexStyle from '@/style/indexStyle';
 
@@ -14,6 +14,11 @@ import indexStyle from '@/style/indexStyle';
 const Tab = createBottomTabNavigator();
 
 export default function index() {
+	const [fontsLoaded, fontsError] = useFonts(
+		{
+			'WorkSans' : require('@/assets/fonts/WorkSans.ttf')
+		}
+	)
 	return (
 		<GestureHandlerRootView>
 			<View style={indexStyle.body}>
