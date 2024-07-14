@@ -15,6 +15,7 @@ export default StyleSheet.create({
     },
     metricListContainer:{
         flexDirection: 'row',
+        height : "100%"
     },
     metricList:{
 

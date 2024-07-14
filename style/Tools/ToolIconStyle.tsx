@@ -7,10 +7,16 @@ export default StyleSheet.create({
         width: 50,
         height : 50, 
         backgroundColor: Colors.dim_gray, 
-        borderRadius : 50, 
-        borderWidth: 2,
+        borderRadius : 10, 
         shadowOffset: {height: 2, width: 2},
         shadowRadius: 5,
+        elevation : 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    image: {
+        width: 40,
+        height: 40,
     }
 
 });

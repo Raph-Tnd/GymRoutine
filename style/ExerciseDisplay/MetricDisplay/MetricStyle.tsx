@@ -12,18 +12,16 @@ export default StyleSheet.create({
         backgroundColor: Colors.azure,
         height: "100%",
         maxHeight : 30,
-        borderRadius : 0,
+        borderRadius : 10,
         justifyContent: 'center',
         alignItems: 'center'
     },
     label: {
-        height: "80%",
         fontSize : 14,
         fontFamily: Font.global,
         paddingRight : 10,
     },
     value: {
-        height: "80%",
         paddingLeft : 10,
         borderLeftWidth : 1,
         fontSize : 14,

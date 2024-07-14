@@ -40,9 +40,9 @@ export default StyleSheet.create({
         alignSelf: 'center',
     },
     numberList:{
+        flexWrap: 'wrap',
         justifyContent: 'center',
         flexDirection: 'row',
-        flexWrap : 'wrap',
     },
     longPressable:{
         backgroundColor: Colors.dim_gray,
@@ -53,6 +53,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         shadowOffset: {height: 2, width: 2},
         shadowRadius: 3,
+        elevation: 3,
     },
     pressable:{
         backgroundColor: Colors.dim_gray,
@@ -63,6 +64,8 @@ export default StyleSheet.create({
         justifyContent: 'center',
         shadowOffset: {height: 2, width: 2},
         shadowRadius: 3,
+        elevation: 3,
+
     },
     pressableLabel:{
         textAlign: 'center',

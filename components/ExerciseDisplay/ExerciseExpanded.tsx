@@ -10,6 +10,7 @@ export default function ExerciseExpanded({metrics, callUpdateMetricMethod} : {me
         <View style={[ExerciseExpandedStyle.body]}>
             <FlatList
                 contentContainerStyle={ExerciseExpandedStyle.metricListContainer}
+                style={ExerciseExpandedStyle.metricList}
                 data={metrics}
                 renderItem={({item}) => <Metric metric={item} callUpdateMetricMethod={callUpdateMetricMethod}/>}
             />
