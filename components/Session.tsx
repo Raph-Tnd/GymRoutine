@@ -65,7 +65,7 @@ export default function Session() {
                 {   
                     !(currentSession === undefined) ?
                     <>
-                        <Text>{currentSession.name}</Text>
+                        <Text style ={SessionStyle.label}>{currentSession.name}</Text>
                         <FlatList
                             contentContainerStyle={SessionStyle.exerciseListContainer}
                             style={SessionStyle.exerciseList}

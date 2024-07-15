@@ -8,7 +8,7 @@ export default function Metric({metric , callUpdateMetricMethod} : {metric: Metr
         <>
             <Pressable style={MetricStyle.body} onPress={() => callUpdateMetricMethod(metric)}>
                 <Text style={MetricStyle.label}>{metric.name}</Text>
-                <Text style={[MetricStyle.value,]}>{metric.value}</Text>
+                <Text style={MetricStyle.value}>{metric.value}</Text>
             </Pressable>
         </>
     )

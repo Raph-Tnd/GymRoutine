@@ -20,10 +20,10 @@ export default StyleSheet.create({
         fontSize : 14,
         fontFamily: Font.global,
         paddingRight : 10,
+        borderRightWidth : 1,
     },
     value: {
         paddingLeft : 10,
-        borderLeftWidth : 1,
         fontSize : 14,
         fontFamily: Font.global,
     }

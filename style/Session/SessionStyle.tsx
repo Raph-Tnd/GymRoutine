@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { Colors } from '../Colors'
+import { Font } from '../Font'
 
 
 export default StyleSheet.create({
@@ -7,6 +8,10 @@ export default StyleSheet.create({
         flex: 1,
         justifyContent: 'space-evenly',
         alignItems: 'center'
+    },
+    label: {
+        fontFamily: Font.global,
+        fontSize: 20,
     },
     exerciseListContainer:{
         alignSelf: 'center',
