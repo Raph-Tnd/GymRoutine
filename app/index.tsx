@@ -1,17 +1,10 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react'
-import Session from '@/components/Session';
-import Profile from '@/components/Profile';
+
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
-import { View } from 'react-native';
-import indexStyle from '@/style/indexStyle';
+import { AuthProvider } from '@/components/global/Provider/AuthProvider';
+import App from '@/components/App';
 
-
-
-
-
-const Tab = createBottomTabNavigator();
 
 export default function index() {
 	const [fontsLoaded, fontsError] = useFonts(
@@ -22,15 +15,9 @@ export default function index() {
 	return (
 		fontsLoaded &&
 		<GestureHandlerRootView>
-			<View style={indexStyle.body}>
-				<Tab.Navigator
-					screenOptions={{
-						headerShown: false
-					}}>
-					<Tab.Screen name="Home" component={Session} />
-					<Tab.Screen name="Profile" component={Profile} />
-				</Tab.Navigator>
-			</View>
+			<AuthProvider>
+				<App/>
+			</AuthProvider>
 		</GestureHandlerRootView>
 	)
 }
