@@ -4,7 +4,6 @@ import Exercise from './ExerciseDisplay/Exercise'
 import SessionStyle from '@/style/Session/SessionStyle'
 import { SessionModel } from '@/model/SessionModel';
 import { FlatList } from 'react-native-gesture-handler';
-import { MetricUpdateBottomSheet as BottomSheet } from './global/BottomSheet';
 import { useSharedValue } from 'react-native-reanimated';
 import { MetricModel } from '@/model/MetricModel';
 import { ExerciseModel, exerciseEquals } from '@/model/ExerciseModel';
@@ -12,6 +11,7 @@ import MetricUpdate from './ExerciseDisplay/MetricDisplay/MetricUpdate';
 import ToolList from './Tools/ToolList';
 import { ToolModel } from '@/model/ToolModel';
 import ToolDisplay from './Tools/ToolDisplay';
+import { BottomSheet } from './global/BottomSheet';
 
 
 export default function Session() {
