@@ -20,6 +20,7 @@ export default function index() {
 		}
 	)
 	return (
+		fontsLoaded &&
 		<GestureHandlerRootView>
 			<View style={indexStyle.body}>
 				<Tab.Navigator

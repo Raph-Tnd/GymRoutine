@@ -19,17 +19,23 @@ export default StyleSheet.create({
         width: "80%",
         height: "80%",
     },
-    stopwatchTimer : {
-        width : 47,
-        height : 47,
+    iconActive : {
+        width : 50,
+        height : 50,
         backgroundColor : Colors.french_gray,
         borderRadius: 50,
         borderWidth: 3,
         borderColor : Colors.dim_gray,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    timer : {
+        width : "100%",
+        height : "100%",
         fontFamily : Font.global,
         fontSize : 14,
         fontWeight : "bold",
         textAlign : 'center',
-        alignContent: 'center'
+        alignContent : "center"
     }
 });
