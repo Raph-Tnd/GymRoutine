@@ -1,5 +1,6 @@
 import { Colors } from "../Colors";
 import { StyleSheet } from 'react-native'
+import { Font } from "../Font";
 
 
 export default StyleSheet.create({
@@ -7,7 +8,7 @@ export default StyleSheet.create({
         width: 50,
         height : 50, 
         backgroundColor: Colors.dim_gray, 
-        borderRadius : 10, 
+        borderRadius : 50, 
         shadowOffset: {height: 2, width: 2},
         shadowRadius: 5,
         elevation : 5,
@@ -17,6 +18,18 @@ export default StyleSheet.create({
     image: {
         width: "80%",
         height: "80%",
+    },
+    stopwatchTimer : {
+        width : 47,
+        height : 47,
+        backgroundColor : Colors.french_gray,
+        borderRadius: 50,
+        borderWidth: 3,
+        borderColor : Colors.dim_gray,
+        fontFamily : Font.global,
+        fontSize : 14,
+        fontWeight : "bold",
+        textAlign : 'center',
+        alignContent: 'center'
     }
-
 });

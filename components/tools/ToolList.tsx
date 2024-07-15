@@ -5,9 +5,9 @@ import StopwatchPressable from './StopwatchPressable'
 import ToolListStyle from '@/style/Tools/ToolListStyle'
 
 export default function ToolList({callUpdateMethod, exerciseTimers} : {callUpdateMethod : (tool: ToolModel) => void, exerciseTimers : number[]}) {
-return (
-    <View style={ToolListStyle.container}>
-        <StopwatchPressable callUpdateMethod={callUpdateMethod} timers={exerciseTimers}/>
-    </View>
-)
+    return (
+        <View style={ToolListStyle.container}>
+            <StopwatchPressable callUpdateMethod={callUpdateMethod} timers={exerciseTimers}/>
+        </View>
+    )
 }
