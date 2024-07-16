@@ -1,13 +1,13 @@
 import { View } from 'react-native'
-import ExerciseExpandedStyle from '@/style/ExerciseDisplay/ExerciseExpandedStyle'
 import React from 'react'
 import Metric from './MetricDisplay/Metric'
 import { MetricModel } from '@/model/MetricModel'
 import { FlatList } from 'react-native-gesture-handler'
+import ExerciseExpandedStyle from '@/style/Session/ExerciseDisplay/ExerciseExpandedStyle'
 
 export default function ExerciseExpanded({metrics, callUpdateMetricMethod} : {metrics : MetricModel[], callUpdateMetricMethod: (metric: MetricModel) => void}) {
     return (
-        <View style={[ExerciseExpandedStyle.body]}>
+        <View style={ExerciseExpandedStyle.body}>
             <FlatList
                 contentContainerStyle={ExerciseExpandedStyle.metricListContainer}
                 style={ExerciseExpandedStyle.metricList}

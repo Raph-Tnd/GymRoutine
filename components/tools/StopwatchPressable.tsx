@@ -2,7 +2,7 @@ import { Image, Pressable, Text } from 'react-native'
 import React, { useContext, useEffect, useState,  } from 'react'
 import { ToolModel, stopwatchReadableTime } from '@/model/ToolModel'
 import ToolIconStyle from '@/style/Tools/ToolIconStyle';
-import { TimerContext } from '../Session';
+import { TimerContext } from '../Session/Session';
 
 export default function StopwatchPressable({callUpdateMethod, timers} : {callUpdateMethod : (tool : ToolModel) => void, timers : number[]}) {
     const stopwatch : ToolModel = {

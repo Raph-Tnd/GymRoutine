@@ -1,11 +1,10 @@
 import { StyleSheet } from 'react-native'
-import { Colors } from '../Colors'
+import { Colors } from '../../Colors'
 
 
 export default StyleSheet.create({
     body: {
         height: "100%",
-        maxHeight: 40,
         width: "90%",
         maxWidth: 700,
         alignSelf: 'center',

@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import BottomSheetStyle from '@/style/global/BottomSheet/BottomSheetStyle'
 import { getPauseTimeFormatted } from '@/model/ExerciseModel'
 import { ToolModel } from '@/model/ToolModel'
-import { TimerContext } from '../Session'
+import { TimerContext } from '../Session/Session'
 
 export default function ToolChoicePressable({choice, tool, applyMethod} : {choice : number, tool : ToolModel, applyMethod : () => void}) {
     const {setCurrentTimer} = useContext(TimerContext);

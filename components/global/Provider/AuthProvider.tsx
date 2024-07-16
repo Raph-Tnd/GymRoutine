@@ -39,7 +39,6 @@ export function AuthProvider({children} : {children : React.ReactElement}){
     useEffect(() => {
         if(currentUser){
             storeData("user", JSON.stringify(currentUser));
-            console.log("user stored");
         }
     }, [currentUser]);
     useEffect(() => {

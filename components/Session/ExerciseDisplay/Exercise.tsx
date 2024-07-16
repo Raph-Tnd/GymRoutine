@@ -1,5 +1,4 @@
 import { View, Text } from 'react-native'
-import ExerciseStyle from '@/style/ExerciseDisplay/ExerciseStyle'
 import React from 'react'
 import {
     Gesture,
@@ -15,6 +14,7 @@ import Animated, {
 import  ExerciseExpanded  from './ExerciseExpanded';
 import { ExerciseModel, getPauseTimeFormatted } from '@/model/ExerciseModel';
 import { MetricModel } from '@/model/MetricModel';
+import GlobalStyle from '@/style/global/GlobalStyle';
 
 export default function Exercise({exercise, callUpdateMetricMethod} : {exercise : ExerciseModel, callUpdateMetricMethod: (exercise : ExerciseModel, metric: MetricModel) => void}) {
     const isPressing = useSharedValue(0);
@@ -50,8 +50,8 @@ export default function Exercise({exercise, callUpdateMetricMethod} : {exercise 
     return (
         <>
             <GestureDetector gesture={tap}>
-                <Animated.View style={[ExerciseStyle.element, pressableAnimatedStyle]}>
-                    <Text style={ExerciseStyle.exerciseName}>{exercise.name}</Text>
+                <Animated.View style={[GlobalStyle.pressable, pressableAnimatedStyle]}>
+                    <Text style={GlobalStyle.pressableMainLabel}>{exercise.name}</Text>
                     <Delimiter/>
                     <Text>{`${exercise.sets}x${exercise.repsPerSet}`}</Text>
                     <Delimiter/>
@@ -69,6 +69,6 @@ export default function Exercise({exercise, callUpdateMetricMethod} : {exercise 
 
 function Delimiter() {
     return(
-        <View style={ExerciseStyle.delimiter}/>
+        <View style={GlobalStyle.delimiter}/>
     )
 }

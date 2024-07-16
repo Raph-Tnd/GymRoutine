@@ -1,17 +1,19 @@
 import { View, Text } from 'react-native'
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import Exercise from './ExerciseDisplay/Exercise'
-import SessionStyle from '@/style/Session/SessionStyle'
 import { SessionModel } from '@/model/SessionModel';
 import { FlatList } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
 import { MetricModel } from '@/model/MetricModel';
 import { ExerciseModel, exerciseEquals } from '@/model/ExerciseModel';
 import MetricUpdate from './ExerciseDisplay/MetricDisplay/MetricUpdate';
-import ToolList from './Tools/ToolList';
+import ToolList from '../Tools/ToolList';
 import { ToolModel } from '@/model/ToolModel';
-import ToolDisplay from './Tools/ToolDisplay';
-import { BottomSheet } from './global/BottomSheet';
+import ToolDisplay from '../Tools/ToolDisplay';
+import { BottomSheet } from '../global/BottomSheet';
+import GlobalStyle from '@/style/global/GlobalStyle';
+import { ProgramContext } from '../global/Provider/ProgramProvider';
+import SessionChange from './SessionChange';
 
 export type TimerContextType = {
     currentTimer : number;
@@ -21,12 +23,20 @@ export type TimerContextType = {
 export const TimerContext = createContext<TimerContextType>({} as TimerContextType);
 
 export default function Session() {
+    const {currentProgram, currentSessionIndex, setCurrentProgram} = useContext(ProgramContext);
     const [currentSession, setCurrentSession] = useState<SessionModel>();
     const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseModel>();
     const [metricToUpdate, setMetricToUpdate] = useState<MetricModel>();
     const [toolToDisplay, setToolToDisplay] = useState<ToolModel>();
     const [currentTimer, setCurrentTimer] = useState(0);
     const isMetricUpdateOpen = useSharedValue(false);
+    const saveSession = () => {
+        if(currentProgram && currentSession){
+            let newCurrentProgram = currentProgram;
+            newCurrentProgram.sessions[currentSessionIndex] = currentSession;
+            setCurrentProgram({...newCurrentProgram});
+        }
+    }
     const toggleSheet = () => {
         isMetricUpdateOpen.value = !isMetricUpdateOpen.value;
     };
@@ -53,22 +63,27 @@ export default function Session() {
         setToolToDisplay(tool);
         toggleSheet();
     }
-    useEffect(()=> {
-        if(currentSession === undefined){
-            var temp : SessionModel = require("@/mocked/Session.json");
-            setCurrentSession(temp);
+    useEffect(() => {
+        if(currentSession === undefined && currentProgram != undefined){
+            setCurrentSession(currentProgram.sessions[currentSessionIndex]);
         }
-    }, []);
+    }, [currentProgram]);
+    useEffect(() => {
+        if(currentProgram != undefined){
+            setCurrentSession(currentProgram.sessions[currentSessionIndex]);
+        }
+    },[currentSessionIndex])
     return (
         <TimerContext.Provider value={{currentTimer, setCurrentTimer}}>
-            <View style={SessionStyle.body}>
+            <View style={GlobalStyle.body}>
                 {   
                     !(currentSession === undefined) ?
                     <>
-                        <Text style ={SessionStyle.label}>{currentSession.name}</Text>
+                        <SessionChange maxSession={currentProgram?.sessions.length} saveMethod={saveSession}/>
+                        <Text style ={GlobalStyle.mainLabel}>{currentSession.name}</Text>
                         <FlatList
-                            contentContainerStyle={SessionStyle.exerciseListContainer}
-                            style={SessionStyle.exerciseList}
+                            contentContainerStyle={GlobalStyle.listContainer}
+                            style={GlobalStyle.list}
                             data={currentSession.exercises}
                             renderItem={({item}) => <Exercise exercise={item} callUpdateMetricMethod={onUpdateMetricHandler}/>}
                         />
