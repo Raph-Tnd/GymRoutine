@@ -1,5 +1,5 @@
 import { View } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext} from 'react'
 import indexStyle from '@/style/indexStyle'
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from './global/Provider/AuthProvider';

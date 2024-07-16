@@ -1,8 +1,8 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Session from './Session/Session';
-import Profile from './Profile';
 import { ProgramProvider } from './global/Provider/ProgramProvider';
+import ProfileStack from './Profile/ProfileStack';
 
 
 
@@ -17,7 +17,7 @@ export default function HomeTabs() {
                 }}
             >
                 <Tab.Screen name="Home" component={Session} />
-                <Tab.Screen name="Profile" component={Profile} /> 
+                <Tab.Screen name="Profile" component={ProfileStack} /> 
             </Tab.Navigator>
         </ProgramProvider>
     )

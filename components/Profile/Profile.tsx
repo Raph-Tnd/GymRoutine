@@ -1,12 +1,13 @@
 import { View, Text } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { ProgramModel } from '@/model/ProgramModel';
-import { ProgramContext } from './global/Provider/ProgramProvider';
+import { ProgramContext } from '../global/Provider/ProgramProvider';
 import APISingleton from '@/services/APISingleton';
-import { AuthContext } from './global/Provider/AuthProvider';
-import ProgramShortDisplay from './Program/ProgramShortDisplay';
+import { AuthContext } from '../global/Provider/AuthProvider';
+import ProgramShortDisplay from '../Program/ProgramShortDisplay';
 import { FlatList } from 'react-native-gesture-handler';
 import GlobalStyle from '@/style/global/GlobalStyle';
+import NewProgramOption from './NewProgramOption';
 
 export default function Profile() {
     const [programSaved, setProgramSaved] = useState<ProgramModel[]>([]);
@@ -34,9 +35,10 @@ export default function Profile() {
                 contentContainerStyle={GlobalStyle.listContainer}
                 style={GlobalStyle.list}
                 data={programSaved}
-                keyExtractor={item => item.name+item.author+item.sessions.length}
                 renderItem={({item}) => <ProgramShortDisplay program={item}/>}
+                ListFooterComponent={<View style={{paddingBottom : 10}}/>}
             />
+            <NewProgramOption/>
         </View>
     )
 }
