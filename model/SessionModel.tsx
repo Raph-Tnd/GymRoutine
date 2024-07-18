@@ -1,6 +1,6 @@
 import { ExerciseModel } from "./ExerciseModel";
 
 export interface SessionModel {
-    name: string;
-    exercises: ExerciseModel[];
-  }
+  name: string;
+  exercises: ExerciseModel[];
+}

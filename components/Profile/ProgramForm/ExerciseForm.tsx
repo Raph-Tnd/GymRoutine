@@ -1,96 +1,110 @@
 // ExerciseForm.tsx
-import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native';
-import MetricForm from './MetricForm';
-import { MetricModel } from '@/model/MetricModel';
-import { ExerciseModel } from '@/model/ExerciseModel';
-import ProgramFormStyle from '@/style/Profile/ProgramFormStyle';
+import React from "react";
+import { View, Text, TextInput, Pressable } from "react-native";
+import { ExerciseModel } from "@/model/ExerciseModel";
+import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import ExerciseExpandedForm from "./ExerciseExpandedForm";
+import { FormDelimiter } from "./ProgramForm";
 
-export default function ExerciseForm({ exercise, onUpdate } : { exercise: ExerciseModel, onUpdate: (updatedExercise : ExerciseModel) => void}){
-    const handleChange = (field: keyof ExerciseModel, value: string | number) => {
-        onUpdate({ ...exercise, [field]: value });
+export default function ExerciseForm({
+  exercise,
+  onUpdate,
+}: {
+  exercise: ExerciseModel;
+  onUpdate: (updatedExercise: ExerciseModel) => void;
+}) {
+  const handleChange = (field: keyof ExerciseModel, value: string | number) => {
+    onUpdate({ ...exercise, [field]: value });
+  };
+  const isPressing = useSharedValue(0);
+  const expandMetrics = useSharedValue(0);
+  const tap = Gesture.LongPress()
+    .shouldCancelWhenOutside(true)
+    .onBegin(() => {
+      isPressing.value = 1;
+    })
+    .onTouchesCancelled(() => {
+      isPressing.value = 0;
+    })
+    .onEnd(() => {
+      isPressing.value = 0;
+      expandMetrics.value = (expandMetrics.value + 1) % 2;
+    });
+  const expandMetricsAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      height: withTiming(expandMetrics.value * 40),
     };
-
-    const addMetric = () => {
-        onUpdate({
-        ...exercise,
-        metrics: [...exercise.metrics, { name: '', value: 0 }],
-        });
-    };
-
-    const updateMetric = (updatedMetric: MetricModel, index: number) => {
-        onUpdate({
-        ...exercise,
-        metrics: exercise.metrics.map((metric, i) => 
-            i === index ? updatedMetric : metric
-        ),
-        });
-    };
-
-    return (
-        <View style={ProgramFormStyle.exercise}>
+  });
+  return (
+    <>
+      <GestureDetector gesture={tap}>
+        <>
+          <Pressable style={ProgramFormStyle.exercise} onLongPress={() => {}}>
             <TextInput
-                style={ProgramFormStyle.exerciseMainLabel}
-                value={exercise.name}
-                onChangeText={(value) => handleChange('name', value)}
-                placeholder="Enter exercise name"
+              style={ProgramFormStyle.exerciseMainLabel}
+              value={exercise.name}
+              onChangeText={(value) => handleChange("name", value)}
+              placeholder="Exercise name"
             />
-            <Delimiter/>
+            <FormDelimiter />
             <TextInput
-                style={ProgramFormStyle.exerciseLabel}
-                value={exercise.sets.toString()}
-                onChangeText={(value) => handleChange('sets', parseInt(value) || 0)}
-                keyboardType="numeric"
-                placeholder="Enter number of sets"
+              style={ProgramFormStyle.exerciseLabel}
+              value={exercise.sets.toString()}
+              onChangeText={(value) =>
+                handleChange("sets", parseInt(value) || 0)
+              }
+              keyboardType="numeric"
+              placeholder="Number of sets"
             />
-            <Delimiter/>
+            <Text style={ProgramFormStyle.exerciseLabel}>x</Text>
             <TextInput
-                style={ProgramFormStyle.exerciseLabel}
-                value={exercise.repsPerSet.toString()}
-                onChangeText={(value) => handleChange('repsPerSet', parseInt(value) || 0)}
-                keyboardType="numeric"
-                placeholder="Enter reps per set"
+              style={ProgramFormStyle.exerciseLabel}
+              value={exercise.repsPerSet.toString()}
+              onChangeText={(value) =>
+                handleChange("repsPerSet", parseInt(value) || 0)
+              }
+              keyboardType="numeric"
+              placeholder="Reps per set"
             />
-            <Delimiter/>
+            <FormDelimiter />
             <TextInput
-                style={ProgramFormStyle.exerciseLabel}
-                value={exercise.weight.toString()}
-                onChangeText={(value) => handleChange('weight', parseFloat(value) || 0)}
-                keyboardType="numeric"
-                placeholder="Enter weight"
+              style={ProgramFormStyle.exerciseLabel}
+              value={exercise.weight.toString()}
+              onChangeText={(value) =>
+                handleChange("weight", parseFloat(value) || 0)
+              }
+              keyboardType="numeric"
+              placeholder="Weight"
             />
-            <Delimiter/>
             <TextInput
-                style={ProgramFormStyle.exerciseLabel}
-                value={exercise.weightUnit}
-                onChangeText={(value) => handleChange('weightUnit', value)}
-                placeholder="Enter weight unit (e.g., kg, lbs)"
+              style={ProgramFormStyle.exerciseLabel}
+              value={exercise.weightUnit}
+              onChangeText={(value) => handleChange("weightUnit", value)}
+              placeholder="Weight Unit)"
             />
-            <Delimiter/>
+            <FormDelimiter />
             <TextInput
-                style={ProgramFormStyle.exerciseLabel}
-                value={exercise.pauseTime.toString()}
-                onChangeText={(value) => handleChange('pauseTime', parseInt(value) || 0)}
-                keyboardType="numeric"
-                placeholder="Enter pause time in seconds"
+              style={ProgramFormStyle.exerciseLabel}
+              value={exercise.pauseTime.toString()}
+              onChangeText={(value) =>
+                handleChange("pauseTime", parseInt(value) || 0)
+              }
+              keyboardType="numeric"
+              placeholder="Pause time (sec)"
             />
-
-
-            {exercise.metrics.map((metric, index) => (
-                <MetricForm
-                key={index}
-                metric={metric}
-                onUpdate={(updatedMetric) => updateMetric(updatedMetric, index)}
-                />
-            ))}
-            <Pressable onPress={addMetric}>Add Metric</Pressable>
-        </View>
-    );
-};
-
-
-function Delimiter() {
-    return(
-        <View style={ProgramFormStyle.delimiter}/>
-    )
+            <Text style={ProgramFormStyle.exerciseLabel}>s</Text>
+          </Pressable>
+        </>
+      </GestureDetector>
+      <Animated.View style={[{ marginBottom: 10 }, expandMetricsAnimatedStyle]}>
+        <ExerciseExpandedForm exercise={exercise} onUpdate={onUpdate} />
+      </Animated.View>
+    </>
+  );
 }
