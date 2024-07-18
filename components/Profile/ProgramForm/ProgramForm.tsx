@@ -7,6 +7,8 @@ import { SessionModel } from "@/model/SessionModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import { AuthContext } from "@/components/global/Provider/AuthProvider";
 import AddRemoveFormBloc from "./AddRemoveFormBloc";
+import { FlatList } from "react-native-gesture-handler";
+import CreateProgramHeader from "../CreateProgramHeader";
 
 const defaultSession: SessionModel = {
   name: "",
@@ -83,30 +85,39 @@ export default function ProgramForm() {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={ProgramFormStyle.body}>
-      <TextInput
-        style={ProgramFormStyle.programLabel}
-        value={program.name}
-        onChangeText={handleProgramNameChange}
-        placeholder="Program name"
-      />
-
-      {program.sessions.map((session, index) => (
-        <SessionForm
-          key={index}
-          session={session}
-          onUpdate={(updatedSession) => updateSession(updatedSession, index)}
+    <>
+      <CreateProgramHeader />
+      <ScrollView contentContainerStyle={ProgramFormStyle.body}>
+        <TextInput
+          style={ProgramFormStyle.programLabel}
+          value={program.name}
+          onChangeText={handleProgramNameChange}
+          placeholder="Program name"
         />
-      ))}
-      <AddRemoveFormBloc
-        style={"Session"}
-        addMethod={addSession}
-        removeMethod={removeSession}
-      />
-      <Pressable style={{}} onPress={() => console.log(program)}>
-        <Text>Save Program</Text>
-      </Pressable>
-    </ScrollView>
+        <FlatList
+          scrollEnabled={false}
+          data={program.sessions}
+          renderItem={({ item, index }) => (
+            <SessionForm
+              key={index}
+              session={item}
+              onUpdate={(updatedSession) =>
+                updateSession(updatedSession, index)
+              }
+            />
+          )}
+          ListFooterComponentStyle={ProgramFormStyle.programFooter}
+          ListFooterComponent={
+            <AddRemoveFormBloc
+              style={"Session"}
+              addMethod={addSession}
+              removeMethod={removeSession}
+              removeActive={program.sessions.length > 1}
+            />
+          }
+        />
+      </ScrollView>
+    </>
   );
 }
 

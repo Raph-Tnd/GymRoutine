@@ -1,7 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { ProgramModel } from "@/model/ProgramModel";
-import { ProgramContext } from "../global/Provider/ProgramProvider";
 import APISingleton from "@/services/APISingleton";
 import { AuthContext } from "../global/Provider/AuthProvider";
 import ProgramShortDisplay from "../Program/ProgramShortDisplay";

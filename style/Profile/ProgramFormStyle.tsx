@@ -4,7 +4,8 @@ import { Colors } from "../Colors";
 
 export default StyleSheet.create({
   body: {
-    marginTop: 10,
+    marginTop: "20%",
+    flexGrow: 0,
     alignSelf: "center",
     alignItems: "center",
     width: "95%",
@@ -120,6 +121,14 @@ export default StyleSheet.create({
     height: "100%",
     width: 80,
   },
+  sessionFooter: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  programFooter: {
+    flexDirection: "row",
+    marginVertical: 10,
+  },
   addRemovePressableContainer: {
     marginVertical: 5,
     height: "100%",
@@ -127,9 +136,10 @@ export default StyleSheet.create({
     flexDirection: "row",
     width: "90%",
     alignSelf: "center",
-    justifyContent: "space-around",
+    justifyContent: "flex-end",
   },
   addRemovePressable: {
+    marginLeft: 10,
     width: "100%",
     height: "100%",
     maxWidth: 30,

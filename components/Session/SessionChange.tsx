@@ -1,7 +1,7 @@
 import { View, Pressable, Text } from "react-native";
 import React, { useContext } from "react";
-import SessionChangeStyle from "@/style/Session/SessionChangeStyle";
 import { ProgramContext } from "../global/Provider/ProgramProvider";
+import GlobalStyle from "@/style/global/GlobalStyle";
 
 export default function SessionChange({
   maxSession = 0,
@@ -17,23 +17,23 @@ export default function SessionChange({
     setCurrentSessionIndex(currentSessionIndex + (previous ? -1 : 1));
   };
   return (
-    <View style={SessionChangeStyle.body}>
+    <View style={GlobalStyle.header}>
       {currentSessionIndex > 0 ? (
         <Pressable
-          style={SessionChangeStyle.pressable}
+          style={GlobalStyle.headerPressable}
           onPress={() => onSessionChange(true)}
         >
-          <Text style={SessionChangeStyle.pressableLabel}>Previous</Text>
+          <Text style={GlobalStyle.headerPressableLabel}>Previous</Text>
         </Pressable>
       ) : (
         <View></View>
       )}
       {currentSessionIndex < maxSession ? (
         <Pressable
-          style={SessionChangeStyle.pressable}
+          style={GlobalStyle.headerPressable}
           onPress={() => onSessionChange(false)}
         >
-          <Text style={SessionChangeStyle.pressableLabel}>Next</Text>
+          <Text style={GlobalStyle.headerPressableLabel}>Next</Text>
         </Pressable>
       ) : (
         <View></View>

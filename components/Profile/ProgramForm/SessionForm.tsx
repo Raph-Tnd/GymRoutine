@@ -68,17 +68,26 @@ export default function SessionForm({
         onChangeText={handleSessionNameChange}
         placeholder="Session name"
       />
-      {session.exercises.map((exercise, index) => (
-        <ExerciseForm
-          key={index}
-          exercise={exercise}
-          onUpdate={(updatedExercise) => updateExercise(updatedExercise, index)}
-        />
-      ))}
-      <AddRemoveFormBloc
-        style={"Exercise"}
-        addMethod={addExercise}
-        removeMethod={removeExercise}
+      <FlatList
+        data={session.exercises}
+        renderItem={({ item, index }) => (
+          <ExerciseForm
+            key={index}
+            exercise={item}
+            onUpdate={(updatedExercise) =>
+              updateExercise(updatedExercise, index)
+            }
+          />
+        )}
+        ListFooterComponentStyle={ProgramFormStyle.sessionFooter}
+        ListFooterComponent={
+          <AddRemoveFormBloc
+            style={"Exercise"}
+            addMethod={addExercise}
+            removeMethod={removeExercise}
+            removeActive={session.exercises.length > 1}
+          />
+        }
       />
     </View>
   );

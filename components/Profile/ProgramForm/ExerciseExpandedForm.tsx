@@ -50,14 +50,16 @@ export default function ExerciseExpandedForm({
             onUpdate={(updatedMetric) => updateMetric(updatedMetric, index)}
           />
         )}
+        ListFooterComponentStyle={ProgramFormStyle.metricFooter}
+        ListFooterComponent={
+          <AddRemoveFormBloc
+            style={"Metric"}
+            addMethod={addMetric}
+            removeMethod={removeMetric}
+            removeActive={exercise.metrics.length > 0}
+          />
+        }
       />
-      <View style={ProgramFormStyle.metricFooter}>
-        <AddRemoveFormBloc
-          style={"Metric"}
-          addMethod={addMetric}
-          removeMethod={removeMetric}
-        />
-      </View>
     </View>
   );
 }

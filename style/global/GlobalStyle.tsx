@@ -5,7 +5,7 @@ import { Colors } from "../Colors";
 export default StyleSheet.create({
   body: {
     flex: 1,
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
     alignItems: "center",
   },
   mainLabel: {
@@ -55,5 +55,33 @@ export default StyleSheet.create({
     fontFamily: Font.global,
     fontWeight: "bold",
     fontSize: 14,
+  },
+  header: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    marginTop: 5,
+    zIndex: 2,
+    paddingHorizontal: 10,
+    flexDirection: "row",
+    height: "100%",
+    maxHeight: 40,
+    width: "100%",
+    justifyContent: "space-between",
+  },
+  headerPressable: {
+    backgroundColor: Colors.dim_gray,
+    width: "100%",
+    maxWidth: 100,
+    justifyContent: "center",
+    shadowOffset: { height: 2, width: 2 },
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  headerPressableLabel: {
+    textAlign: "center",
+    fontFamily: Font.global,
+    fontSize: 14,
+    fontWeight: "bold",
   },
 });

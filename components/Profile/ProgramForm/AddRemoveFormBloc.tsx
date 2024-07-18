@@ -6,10 +6,12 @@ export default function AddRemoveFormBloc({
   style,
   addMethod,
   removeMethod,
+  removeActive,
 }: {
   style: "Session" | "Exercise" | "Metric";
   addMethod: () => void;
   removeMethod: () => void;
+  removeActive: boolean;
 }) {
   const colors = () => {
     switch (style) {
@@ -23,12 +25,14 @@ export default function AddRemoveFormBloc({
   };
   return (
     <View style={ProgramFormStyle.addRemovePressableContainer}>
-      <Pressable
-        style={[ProgramFormStyle.addRemovePressable, colors()]}
-        onPress={removeMethod}
-      >
-        <Text style={ProgramFormStyle.addRemoveLabel}>-</Text>
-      </Pressable>
+      {removeActive && (
+        <Pressable
+          style={[ProgramFormStyle.addRemovePressable, colors()]}
+          onPress={removeMethod}
+        >
+          <Text style={ProgramFormStyle.addRemoveLabel}>-</Text>
+        </Pressable>
+      )}
       <Pressable
         style={[ProgramFormStyle.addRemovePressable, colors()]}
         onPress={addMethod}
