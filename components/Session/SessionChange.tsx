@@ -1,4 +1,4 @@
-import { View, Pressable } from "react-native";
+import { View, Pressable, Text } from "react-native";
 import React, { useContext } from "react";
 import SessionChangeStyle from "@/style/Session/SessionChangeStyle";
 import { ProgramContext } from "../global/Provider/ProgramProvider";
@@ -23,7 +23,7 @@ export default function SessionChange({
           style={SessionChangeStyle.pressable}
           onPress={() => onSessionChange(true)}
         >
-          Previous
+          <Text style={SessionChangeStyle.pressableLabel}>Previous</Text>
         </Pressable>
       ) : (
         <View></View>
@@ -33,7 +33,7 @@ export default function SessionChange({
           style={SessionChangeStyle.pressable}
           onPress={() => onSessionChange(false)}
         >
-          Next
+          <Text style={SessionChangeStyle.pressableLabel}>Next</Text>
         </Pressable>
       ) : (
         <View></View>

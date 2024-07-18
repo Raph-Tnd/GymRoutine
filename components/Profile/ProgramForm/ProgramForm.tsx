@@ -1,6 +1,6 @@
 // ProgramForm.tsx
 import React, { useContext, useEffect, useState } from "react";
-import { TextInput, ScrollView, Pressable, View } from "react-native";
+import { TextInput, ScrollView, Pressable, View, Text } from "react-native";
 import SessionForm from "./SessionForm";
 import { ProgramModel } from "@/model/ProgramModel";
 import { SessionModel } from "@/model/SessionModel";
@@ -104,7 +104,7 @@ export default function ProgramForm() {
         removeMethod={removeSession}
       />
       <Pressable style={{}} onPress={() => console.log(program)}>
-        Save Program
+        <Text>Save Program</Text>
       </Pressable>
     </ScrollView>
   );
