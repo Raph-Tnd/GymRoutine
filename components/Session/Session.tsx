@@ -10,7 +10,7 @@ import MetricUpdate from "./ExerciseDisplay/MetricDisplay/MetricUpdate";
 import ToolList from "../Tools/ToolList";
 import { ToolModel } from "@/model/ToolModel";
 import ToolDisplay from "../Tools/ToolDisplay";
-import { BottomSheet } from "../global/BottomSheet";
+import { BottomSheet } from "../global/BottomSheet/BottomSheet";
 import GlobalStyle from "@/style/global/GlobalStyle";
 import { ProgramContext } from "../global/Provider/ProgramProvider";
 import SessionChange from "./SessionChange";
@@ -32,7 +32,7 @@ export default function Session() {
   const [metricToUpdate, setMetricToUpdate] = useState<MetricModel>();
   const [toolToDisplay, setToolToDisplay] = useState<ToolModel>();
   const [currentTimer, setCurrentTimer] = useState(0);
-  const isMetricUpdateOpen = useSharedValue(false);
+  const isBottomSheetOpen = useSharedValue(false);
   const saveSession = () => {
     if (currentProgram && currentSession) {
       let newCurrentProgram = currentProgram;
@@ -41,7 +41,7 @@ export default function Session() {
     }
   };
   const toggleSheet = () => {
-    isMetricUpdateOpen.value = !isMetricUpdateOpen.value;
+    isBottomSheetOpen.value = !isBottomSheetOpen.value;
   };
   const onUpdateMetricHandler = (
     exercise: ExerciseModel,
@@ -114,10 +114,7 @@ export default function Session() {
                 )}
               />
               {/* Has to be in Session because absolute position inside a scrollview/flatlist isn't working */}
-              <BottomSheet
-                isOpen={isMetricUpdateOpen}
-                toggleSheet={toggleSheet}
-              >
+              <BottomSheet isOpen={isBottomSheetOpen} toggleSheet={toggleSheet}>
                 {metricToUpdate != undefined ? (
                   <MetricUpdate
                     metric={metricToUpdate}

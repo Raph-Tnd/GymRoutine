@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import GlobalStyle from "@/style/global/GlobalStyle";
 import { useNavigation } from "@react-navigation/native";
 import { ProfileStackParamList } from "./ProfileStack";
@@ -7,18 +7,26 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { CreatedProgramContext } from "../global/Provider/CreatedProgramProvider";
 import { newProgram, validateProgram } from "@/model/ProgramModel";
 import APISingleton from "@/services/APISingleton";
-import { AuthContext, User } from "../global/Provider/AuthProvider";
+import { AuthContext } from "../global/Provider/AuthProvider";
+import { GlobalAlert } from "../global/GlobalAlert/GlobalAlert";
+import { useSharedValue } from "react-native-reanimated";
+import GlobalAlertStyle from "@/style/global/GlobalAlert/GlobalAlertStyle";
 
 type ProgramFormNavigationProp = StackNavigationProp<
   ProfileStackParamList,
   "Profile"
 >;
 export default function CreateProgramHeader() {
+  const [errorAlertMessage, setErrorAlertMessage] = useState("");
   const { currentUser } = useContext(AuthContext);
   const { currentCreatedProgram, setCurrentCreatedProgram } = useContext(
     CreatedProgramContext,
   );
   const route = useNavigation<ProgramFormNavigationProp>();
+  const isGlobalAlertOpen = useSharedValue(false);
+  const toggleSheet = () => {
+    isGlobalAlertOpen.value = !isGlobalAlertOpen.value;
+  };
   const onBackPressHandler = () => {
     route.goBack();
   };
@@ -37,26 +45,69 @@ export default function CreateProgramHeader() {
         setCurrentCreatedProgram(newProgram(currentUser.user.email));
         route.navigate("Profile", { reload: true });
       } else {
-        console.log("CAN'T HAD PROGRAM");
+        setErrorAlertMessage(
+          "You have reached your maximum number of program on this account, remove one or subscribe.",
+        );
+        toggleSheet();
       }
     } else {
-      console.log("NOT VALID");
+      setErrorAlertMessage(
+        "The program isn't valid, colored text has to be modified.",
+      );
+      toggleSheet();
     }
   };
+
   return (
-    <View style={GlobalStyle.header}>
+    <>
+      <View style={GlobalStyle.header}>
+        <Pressable
+          style={GlobalStyle.headerPressable}
+          onPress={onBackPressHandler}
+        >
+          <Text style={GlobalStyle.headerPressableLabel}>Go back</Text>
+        </Pressable>
+        <Pressable
+          style={GlobalStyle.headerPressable}
+          onPress={onSavePressHandler}
+        >
+          <Text style={GlobalStyle.headerPressableLabel}>Save</Text>
+        </Pressable>
+      </View>
+      <GlobalAlert isOpen={isGlobalAlertOpen} toggleSheet={toggleSheet}>
+        <SaveProgramErrorDisplay
+          text={errorAlertMessage}
+          toggleSheet={toggleSheet}
+        />
+      </GlobalAlert>
+    </>
+  );
+}
+
+function SaveProgramErrorDisplay({
+  text,
+  toggleSheet,
+}: {
+  text: string;
+  toggleSheet: () => void;
+}) {
+  const [isPressing, setIsPressing] = useState(false);
+  return (
+    <>
+      <Text style={GlobalAlertStyle.information}>{text}</Text>
       <Pressable
-        style={GlobalStyle.headerPressable}
-        onPress={onBackPressHandler}
+        style={[
+          GlobalAlertStyle.pressable,
+          isPressing ? GlobalAlertStyle.pressablePressing : null,
+        ]}
+        onPressIn={() => setIsPressing(true)}
+        onPressOut={() => {
+          setIsPressing(false);
+          toggleSheet();
+        }}
       >
-        <Text style={GlobalStyle.headerPressableLabel}>Go back</Text>
+        <Text style={GlobalStyle.pressableMainLabel}>Ok</Text>
       </Pressable>
-      <Pressable
-        style={GlobalStyle.headerPressable}
-        onPress={onSavePressHandler}
-      >
-        <Text style={GlobalStyle.headerPressableLabel}>Save</Text>
-      </Pressable>
-    </View>
+    </>
   );
 }

@@ -5,6 +5,8 @@ import { ExerciseModel } from "@/model/ExerciseModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+  interpolate,
+  interpolateColor,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -44,11 +46,24 @@ export default function ExerciseForm({
       height: withTiming(expandMetrics.value * 40),
     };
   });
+  const pressableAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(isPressing.value, [0, 1], [1, 0.8]),
+      shadowColor: interpolateColor(
+        isPressing.value,
+        [0, 1],
+        ["black", "transparent"],
+      ),
+      elevation: interpolate(isPressing.value, [0, 1], [5, 0]),
+    };
+  });
   return (
     <>
       <GestureDetector gesture={tap}>
         <>
-          <Pressable style={ProgramFormStyle.exercise} onLongPress={() => {}}>
+          <Animated.View
+            style={[ProgramFormStyle.exercise, pressableAnimatedStyle]}
+          >
             <TextInput
               style={ProgramFormStyle.exerciseMainLabel}
               value={exercise.name}
@@ -121,7 +136,7 @@ export default function ExerciseForm({
             >
               s
             </Text>
-          </Pressable>
+          </Animated.View>
         </>
       </GestureDetector>
       <Animated.View style={[{ marginBottom: 10 }, expandMetricsAnimatedStyle]}>

@@ -1,5 +1,5 @@
 import BottomSheetStyle from "@/style/global/BottomSheet/BottomSheetStyle";
-import { Text, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
