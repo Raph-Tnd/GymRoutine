@@ -1,4 +1,4 @@
-import { MetricModel } from "./MetricModel";
+import { MetricModel, validateMetric } from "./MetricModel";
 
 export interface ExerciseModel {
   name: string;
@@ -32,5 +32,31 @@ export function exerciseEquals(
     ex1.repsPerSet === ex2.repsPerSet &&
     ex1.sets === ex2.sets &&
     ex1.pauseTime === ex2.pauseTime
+  );
+}
+
+export function newExercise(): ExerciseModel {
+  return {
+    name: "",
+    sets: 0,
+    repsPerSet: 0,
+    weight: 0,
+    weightUnit: "kg",
+    pauseTime: 0,
+    metrics: [],
+  };
+}
+
+export function validateExercise(exercise: ExerciseModel): boolean {
+  return (
+    exercise.name != "" &&
+    exercise.sets > 0 &&
+    exercise.repsPerSet > 0 &&
+    exercise.weight >= 0 &&
+    exercise.pauseTime >= 0 /* &&
+    exercise.metrics.reduce(
+      (previous, metric) => previous && validateMetric(metric),
+      true,
+    ) */
   );
 }

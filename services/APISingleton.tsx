@@ -24,15 +24,15 @@ export default class APISingleton {
     return this.instance;
   }
 
-  public async ApiKey(user_id: string) {
+  public async apiKey(user_id: string) {
     if (this._api_key == "") {
-      let mavvin_key_json = await this.GetApiKey(user_id);
+      let mavvin_key_json = await this.getApiKey(user_id);
       this._api_key = mavvin_key_json.MAVVIN_KEY;
     }
     return this._api_key;
   }
 
-  private GetApiKey(user_id: string): Promise<MavvinKey> {
+  private getApiKey(user_id: string): Promise<MavvinKey> {
     return fetch(API_URL + "/get_api_key?user_id=" + user_id, {
       method: "GET",
       headers: {
@@ -49,15 +49,13 @@ export default class APISingleton {
       });
   }
 
-  public async GetProgramsSaved({
+  public async getProgramsSaved({
     user_id,
   }: {
     user_id: string;
   }): Promise<ProgramModel[]> {
     let mocked: ProgramModel = require("@/mocked/Program.json");
-    let mocked2: ProgramModel = require("@/mocked/Program.json");
-    mocked2.name = "Another 12 week programs";
-    return [mocked, mocked2];
+    return [mocked];
 
     let call_url = API_URL + "/programsSaved?user_id=" + user_id;
     try {
@@ -65,7 +63,7 @@ export default class APISingleton {
         method: "GET",
         headers: {
           Accept: "application/json",
-          "X-API-Key": await APISingleton.getInstance().ApiKey(user_id),
+          "X-API-Key": await APISingleton.getInstance().apiKey(user_id),
         },
       });
       return response.ok ? response.json() : [];
@@ -73,5 +71,40 @@ export default class APISingleton {
       console.log(error);
       return [];
     }
+  }
+
+  public async postSaveProgram({
+    user_id,
+    program,
+  }: {
+    user_id: string;
+    program: ProgramModel;
+  }): Promise<boolean> {
+    const body: QueryObject = {
+      user_id: user_id,
+      program: JSON.stringify(program),
+    };
+    const formBody = Object.keys(body)
+      .map(
+        (key) => encodeURIComponent(key) + "=" + encodeURIComponent(body[key]),
+      )
+      .join("&");
+
+    return true;
+    return fetch("/saveProgram", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "X-API-Key": await APISingleton.getInstance().apiKey(user_id),
+        body: formBody,
+      },
+    })
+      .then((response) => {
+        return response.ok;
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   }
 }

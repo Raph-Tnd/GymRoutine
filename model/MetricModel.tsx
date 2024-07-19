@@ -17,7 +17,7 @@ export function metricPossibleValue(metric: MetricModel): number[] {
 const createRange = (start: number, end: number): number[] =>
   [...Array(end - start + 1).keys()].map((i) => i + start);
 
-function validateMetric(metric: MetricModel): boolean {
+export function validateMetric(metric: MetricModel): boolean {
   if (metric.value === null) return true;
 
   switch (metric.name) {

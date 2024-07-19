@@ -1,9 +1,8 @@
 // MetricForm.tsx
 import { MetricModel } from "@/model/MetricModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
-import MetricStyle from "@/style/Session/ExerciseDisplay/MetricDisplay/MetricStyle";
 import React from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, TextInput } from "react-native";
 import { FormDelimiter } from "./ProgramForm";
 
 export default function MetricForm({
@@ -13,7 +12,7 @@ export default function MetricForm({
   metric: MetricModel;
   onUpdate: (metric: MetricModel) => void;
 }) {
-  const handleChange = (field: keyof MetricModel, value: string | number) => {
+  const handleChange = (field: keyof MetricModel, value: string) => {
     onUpdate({ ...metric, [field]: value });
   };
 
@@ -26,13 +25,6 @@ export default function MetricForm({
         placeholder="Metric"
       />
       <FormDelimiter />
-      <TextInput
-        style={ProgramFormStyle.metricInput}
-        value={(metric.value ?? 0).toString()}
-        onChangeText={(value) => handleChange("value", parseFloat(value) || 0)}
-        keyboardType="numeric"
-        placeholder="value"
-      />
     </View>
   );
 }

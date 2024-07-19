@@ -1,25 +1,20 @@
 // SessionForm.tsx
 import React from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { View, TextInput } from "react-native";
 import ExerciseForm from "./ExerciseForm";
 import { SessionModel } from "@/model/SessionModel";
-import { ExerciseModel } from "@/model/ExerciseModel";
+import { ExerciseModel, newExercise } from "@/model/ExerciseModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import AddRemoveFormBloc from "./AddRemoveFormBloc";
 import { FlatList } from "react-native-gesture-handler";
 
 export default function SessionForm({
   session,
+  index,
   onUpdate,
 }: {
   session: SessionModel;
+  index: number;
   onUpdate: (updatedSession: SessionModel) => void;
 }) {
   const handleSessionNameChange = (name: string) => {
@@ -29,18 +24,7 @@ export default function SessionForm({
   const addExercise = () => {
     onUpdate({
       ...session,
-      exercises: [
-        ...session.exercises,
-        {
-          name: "",
-          sets: 0,
-          repsPerSet: 0,
-          weight: 0,
-          weightUnit: "kg",
-          pauseTime: 0,
-          metrics: [],
-        },
-      ],
+      exercises: [...session.exercises, newExercise()],
     });
   };
 
@@ -66,7 +50,8 @@ export default function SessionForm({
         style={ProgramFormStyle.sessionLabel}
         value={session.name}
         onChangeText={handleSessionNameChange}
-        placeholder="Session name"
+        placeholder={`Session ${index + 1}`}
+        selectTextOnFocus={true}
       />
       <FlatList
         data={session.exercises}
@@ -74,6 +59,7 @@ export default function SessionForm({
           <ExerciseForm
             key={index}
             exercise={item}
+            index={index}
             onUpdate={(updatedExercise) =>
               updateExercise(updatedExercise, index)
             }

@@ -79,10 +79,21 @@ export default StyleSheet.create({
     fontSize: 14,
   },
   exerciseLabel: {
-    width: "25%",
+    width: "30%",
     textAlign: "center",
     fontFamily: Font.global,
     fontSize: 14,
+  },
+  exerciseLabelPlaceholder: {
+    color: Colors.air_force_blue,
+  },
+  exerciseInputCue: {
+    textAlign: "center",
+    fontFamily: Font.global,
+    fontSize: 14,
+  },
+  exerciceInputCueEdge: {
+    marginRight: 5,
   },
   metricView: {
     height: "100%",

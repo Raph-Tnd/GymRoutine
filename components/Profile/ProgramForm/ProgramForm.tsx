@@ -1,122 +1,98 @@
 // ProgramForm.tsx
-import React, { useContext, useEffect, useState } from "react";
-import { TextInput, ScrollView, Pressable, View, Text } from "react-native";
+import React, { useContext } from "react";
+import { TextInput, ScrollView, View } from "react-native";
 import SessionForm from "./SessionForm";
 import { ProgramModel } from "@/model/ProgramModel";
-import { SessionModel } from "@/model/SessionModel";
+import { SessionModel, newSession } from "@/model/SessionModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import { AuthContext } from "@/components/global/Provider/AuthProvider";
 import AddRemoveFormBloc from "./AddRemoveFormBloc";
 import { FlatList } from "react-native-gesture-handler";
 import CreateProgramHeader from "../CreateProgramHeader";
-
-const defaultSession: SessionModel = {
-  name: "",
-  exercises: [
-    {
-      name: "",
-      sets: 0,
-      repsPerSet: 0,
-      pauseTime: 0,
-      weight: 0,
-      weightUnit: "kg",
-      metrics: [],
-    },
-  ],
-};
+import { CreatedProgramContext } from "@/components/global/Provider/CreatedProgramProvider";
+import { Colors } from "@/style/Colors";
 
 export default function ProgramForm() {
   const { currentUser } = useContext(AuthContext);
-  const [program, setProgram] = useState<ProgramModel>({
-    name: "",
-    author: "",
-    sessions: [],
-  });
+  const { currentCreatedProgram, setCurrentCreatedProgram } = useContext(
+    CreatedProgramContext,
+  );
 
   const handleProgramNameChange = (name: string) => {
-    setProgram((prev) => ({ ...prev, name }));
+    if (currentCreatedProgram) {
+      let newCreatedProgram = currentCreatedProgram;
+      newCreatedProgram.name = name;
+      setCurrentCreatedProgram({ ...newCreatedProgram });
+    }
   };
 
   const addSession = () => {
-    setProgram((prev) => ({
-      ...prev,
-      sessions: [
-        ...prev.sessions,
-        {
-          name: "",
-          exercises: [
-            {
-              name: "",
-              sets: 0,
-              repsPerSet: 0,
-              pauseTime: 0,
-              weight: 0,
-              weightUnit: "kg",
-              metrics: [],
-            },
-          ],
-        },
-      ],
-    }));
+    if (currentCreatedProgram) {
+      let newCreatedProgram = currentCreatedProgram;
+      newCreatedProgram.sessions = [
+        ...newCreatedProgram.sessions,
+        newSession(currentCreatedProgram.sessions.length + 1),
+      ];
+      setCurrentCreatedProgram({ ...newCreatedProgram });
+    }
   };
 
   const removeSession = () => {
-    setProgram((prev) => ({
-      ...prev,
-      sessions: [...prev.sessions.splice(0, prev.sessions.length - 1)],
-    }));
+    if (currentCreatedProgram) {
+      let newCreatedProgram = currentCreatedProgram;
+      newCreatedProgram.sessions = newCreatedProgram.sessions.splice(
+        0,
+        newCreatedProgram.sessions.length - 1,
+      );
+      setCurrentCreatedProgram({ ...newCreatedProgram });
+    }
   };
 
   const updateSession = (updatedSession: SessionModel, index: number) => {
-    setProgram((prev) => ({
-      ...prev,
-      sessions: prev.sessions.map((session, i) =>
-        i === index ? updatedSession : session,
-      ),
-    }));
+    if (currentCreatedProgram) {
+      let newCreatedProgram = currentCreatedProgram;
+      newCreatedProgram.sessions[index] = updatedSession;
+      setCurrentCreatedProgram({ ...newCreatedProgram });
+    }
   };
-
-  useEffect(() => {
-    setProgram((prev) => ({
-      ...prev,
-      author: currentUser ? currentUser.user.email : "",
-      sessions: [defaultSession],
-    }));
-  }, []);
 
   return (
     <>
       <CreateProgramHeader />
-      <ScrollView contentContainerStyle={ProgramFormStyle.body}>
-        <TextInput
-          style={ProgramFormStyle.programLabel}
-          value={program.name}
-          onChangeText={handleProgramNameChange}
-          placeholder="Program name"
-        />
-        <FlatList
-          scrollEnabled={false}
-          data={program.sessions}
-          renderItem={({ item, index }) => (
-            <SessionForm
-              key={index}
-              session={item}
-              onUpdate={(updatedSession) =>
-                updateSession(updatedSession, index)
-              }
-            />
-          )}
-          ListFooterComponentStyle={ProgramFormStyle.programFooter}
-          ListFooterComponent={
-            <AddRemoveFormBloc
-              style={"Session"}
-              addMethod={addSession}
-              removeMethod={removeSession}
-              removeActive={program.sessions.length > 1}
-            />
-          }
-        />
-      </ScrollView>
+      {currentCreatedProgram && (
+        <ScrollView contentContainerStyle={ProgramFormStyle.body}>
+          <TextInput
+            style={ProgramFormStyle.programLabel}
+            value={currentCreatedProgram.name}
+            onChangeText={handleProgramNameChange}
+            placeholder="Program name"
+            placeholderTextColor={Colors.air_force_blue}
+          />
+          <FlatList
+            scrollEnabled={false}
+            data={currentCreatedProgram.sessions}
+            renderItem={({ item, index }) => (
+              <SessionForm
+                key={index}
+                session={item}
+                index={index}
+                onUpdate={(updatedSession) =>
+                  updateSession(updatedSession, index)
+                }
+              />
+            )}
+            ListFooterComponentStyle={ProgramFormStyle.programFooter}
+            ListFooterComponent={
+              <AddRemoveFormBloc
+                style={"Session"}
+                addMethod={addSession}
+                removeMethod={removeSession}
+                removeActive={currentCreatedProgram.sessions.length > 1}
+              />
+            }
+          />
+        </ScrollView>
+      )}
     </>
   );
 }

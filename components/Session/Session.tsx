@@ -89,7 +89,7 @@ export default function Session() {
     <TimerContext.Provider value={{ currentTimer, setCurrentTimer }}>
       <View style={GlobalStyle.body}>
         {
-          !(currentSession === undefined) ? (
+          currentSession != undefined ? (
             <>
               <SessionChange
                 maxSession={currentProgram?.sessions.length}

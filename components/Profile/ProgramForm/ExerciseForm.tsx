@@ -1,6 +1,6 @@
 // ExerciseForm.tsx
 import React from "react";
-import { View, Text, TextInput, Pressable } from "react-native";
+import { Text, TextInput, Pressable } from "react-native";
 import { ExerciseModel } from "@/model/ExerciseModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -11,12 +11,15 @@ import Animated, {
 } from "react-native-reanimated";
 import ExerciseExpandedForm from "./ExerciseExpandedForm";
 import { FormDelimiter } from "./ProgramForm";
+import { Colors } from "@/style/Colors";
 
 export default function ExerciseForm({
   exercise,
+  index,
   onUpdate,
 }: {
   exercise: ExerciseModel;
+  index: number;
   onUpdate: (updatedExercise: ExerciseModel) => void;
 }) {
   const handleChange = (field: keyof ExerciseModel, value: string | number) => {
@@ -50,27 +53,38 @@ export default function ExerciseForm({
               style={ProgramFormStyle.exerciseMainLabel}
               value={exercise.name}
               onChangeText={(value) => handleChange("name", value)}
-              placeholder="Exercise name"
+              placeholder={`Exercise ${index + 1}`}
+              placeholderTextColor={Colors.air_force_blue}
             />
             <FormDelimiter />
             <TextInput
-              style={ProgramFormStyle.exerciseLabel}
+              style={[
+                ProgramFormStyle.exerciseLabel,
+                exercise.sets == 0
+                  ? ProgramFormStyle.exerciseLabelPlaceholder
+                  : null,
+              ]}
+              selectTextOnFocus={true}
               value={exercise.sets.toString()}
               onChangeText={(value) =>
                 handleChange("sets", parseInt(value) || 0)
               }
               keyboardType="numeric"
-              placeholder="Number of sets"
             />
-            <Text style={ProgramFormStyle.exerciseLabel}>x</Text>
+            <Text style={ProgramFormStyle.exerciseInputCue}>x</Text>
             <TextInput
-              style={ProgramFormStyle.exerciseLabel}
+              style={[
+                ProgramFormStyle.exerciseLabel,
+                exercise.repsPerSet == 0
+                  ? ProgramFormStyle.exerciseLabelPlaceholder
+                  : null,
+              ]}
+              selectTextOnFocus={true}
               value={exercise.repsPerSet.toString()}
               onChangeText={(value) =>
                 handleChange("repsPerSet", parseInt(value) || 0)
               }
               keyboardType="numeric"
-              placeholder="Reps per set"
             />
             <FormDelimiter />
             <TextInput
@@ -80,7 +94,8 @@ export default function ExerciseForm({
                 handleChange("weight", parseFloat(value) || 0)
               }
               keyboardType="numeric"
-              placeholder="Weight"
+              placeholder="0"
+              placeholderTextColor={Colors.air_force_blue}
             />
             <TextInput
               style={ProgramFormStyle.exerciseLabel}
@@ -98,7 +113,14 @@ export default function ExerciseForm({
               keyboardType="numeric"
               placeholder="Pause time (sec)"
             />
-            <Text style={ProgramFormStyle.exerciseLabel}>s</Text>
+            <Text
+              style={[
+                ProgramFormStyle.exerciseInputCue,
+                ProgramFormStyle.exerciceInputCueEdge,
+              ]}
+            >
+              s
+            </Text>
           </Pressable>
         </>
       </GestureDetector>

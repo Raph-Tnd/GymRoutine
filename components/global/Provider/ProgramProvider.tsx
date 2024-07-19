@@ -34,7 +34,6 @@ export function ProgramProvider({
       let storedIndex = await getMyStringValue("sessionIndex");
       if (storedProgram) {
         let newProgram: ProgramModel = JSON.parse(storedProgram);
-        console.log(newProgram);
         setCurrentProgram(newProgram);
         let newSessionIndex: number = storedIndex ? JSON.parse(storedIndex) : 0;
         setCurrentSessionIndex(newSessionIndex);
