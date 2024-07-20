@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ProgramModel } from "@/model/ProgramModel";
 import APISingleton from "@/services/APISingleton";
 import { AuthContext } from "../global/Provider/AuthProvider";

@@ -10,4 +10,6 @@ export const Colors = {
   davys_gray: "#605e62",
   air_force_blue: "#4b8ca7",
   seasalt: "#f7f7f7",
+  red: "#631B19",
+  green: "#CBE896",
 };

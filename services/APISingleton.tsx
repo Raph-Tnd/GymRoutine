@@ -107,4 +107,37 @@ export default class APISingleton {
         return false;
       });
   }
+  public async deleteSavedProgram({
+    user_id,
+    program,
+  }: {
+    user_id: string;
+    program: ProgramModel;
+  }): Promise<boolean> {
+    const body: QueryObject = {
+      user_id: user_id,
+      program: JSON.stringify(program),
+    };
+    const formBody = Object.keys(body)
+      .map(
+        (key) => encodeURIComponent(key) + "=" + encodeURIComponent(body[key]),
+      )
+      .join("&");
+    return true;
+    return fetch("/deleteProgram", {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "X-API-Key": await APISingleton.getInstance().apiKey(user_id),
+        body: formBody,
+      },
+    })
+      .then((response) => {
+        return response.ok;
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
+  }
 }
