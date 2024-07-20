@@ -5,6 +5,7 @@ import { Colors } from "../Colors";
 export default StyleSheet.create({
   body: {
     flex: 1,
+    backgroundColor: Colors.seasalt,
     justifyContent: "space-around",
     alignItems: "center",
   },
@@ -57,10 +58,11 @@ export default StyleSheet.create({
     fontSize: 14,
   },
   header: {
+    paddingTop: 5,
+    backgroundColor: Colors.seasalt,
     position: "absolute",
     left: 0,
     top: 0,
-    marginTop: 5,
     zIndex: 2,
     paddingHorizontal: 10,
     flexDirection: "row",

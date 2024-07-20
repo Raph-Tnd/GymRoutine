@@ -11,6 +11,8 @@ import { FlatList } from "react-native-gesture-handler";
 import CreateProgramHeader from "../CreateProgramHeader";
 import { CreatedProgramContext } from "@/components/global/Provider/CreatedProgramProvider";
 import { Colors } from "@/style/Colors";
+import { GlobalAlert } from "@/components/global/GlobalAlert/GlobalAlert";
+import GlobalStyle from "@/style/global/GlobalStyle";
 
 export default function ProgramForm() {
   const { currentUser } = useContext(AuthContext);
@@ -57,7 +59,7 @@ export default function ProgramForm() {
   };
 
   return (
-    <>
+    <View style={GlobalStyle.body}>
       <CreateProgramHeader />
       {currentCreatedProgram && (
         <ScrollView contentContainerStyle={ProgramFormStyle.body}>
@@ -66,7 +68,7 @@ export default function ProgramForm() {
             value={currentCreatedProgram.name}
             onChangeText={handleProgramNameChange}
             placeholder="Program name"
-            placeholderTextColor={Colors.air_force_blue}
+            placeholderTextColor={Colors.red}
           />
           <FlatList
             scrollEnabled={false}
@@ -93,7 +95,7 @@ export default function ProgramForm() {
           />
         </ScrollView>
       )}
-    </>
+    </View>
   );
 }
 
