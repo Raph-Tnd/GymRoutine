@@ -58,7 +58,7 @@ export default StyleSheet.create({
     fontSize: 14,
   },
   header: {
-    paddingTop: 5,
+    paddingVertical: 5,
     backgroundColor: Colors.seasalt,
     position: "absolute",
     left: 0,
@@ -67,7 +67,7 @@ export default StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: "row",
     height: "100%",
-    maxHeight: 40,
+    maxHeight: 50,
     width: "100%",
     justifyContent: "space-between",
   },

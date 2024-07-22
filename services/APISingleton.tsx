@@ -140,4 +140,33 @@ export default class APISingleton {
         return false;
       });
   }
+
+  public async getSearchedPrograms({
+    user_id,
+    research,
+  }: {
+    user_id: string;
+    research: string;
+  }): Promise<ProgramModel[]> {
+    let mocked: ProgramModel = require("@/mocked/Program.json");
+    return [mocked];
+    return fetch(
+      "/searchProgram?user_id=" + user_id + "&research=" + research,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "X-API-Key": await APISingleton.getInstance().apiKey(user_id),
+        },
+      },
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        return response.ok ? response.json() : [];
+      })
+      .catch((error) => {
+        console.log(error);
+        return [];
+      });
+  }
 }

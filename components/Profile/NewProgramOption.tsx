@@ -15,6 +15,9 @@ export default function NewProgramOption() {
   const onCreatePressHandler = () => {
     route.navigate("ProgramForm");
   };
+  const onBrowsePressHandler = () => {
+    route.navigate("BrowseProgram");
+  };
   return (
     <View style={NewProgramOptionStyle.body}>
       <Pressable
@@ -23,7 +26,10 @@ export default function NewProgramOption() {
       >
         <Text style={NewProgramOptionStyle.pressableLabel}>Create program</Text>
       </Pressable>
-      <Pressable style={NewProgramOptionStyle.pressable}>
+      <Pressable
+        style={NewProgramOptionStyle.pressable}
+        onPress={onBrowsePressHandler}
+      >
         <Text style={NewProgramOptionStyle.pressableLabel}>
           Browse programs
         </Text>
