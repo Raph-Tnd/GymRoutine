@@ -9,6 +9,8 @@ import GlobalStyle from "@/style/global/GlobalStyle";
 import NewProgramOption from "./NewProgramOption";
 import { ProfileStackParamList } from "./ProfileStack";
 import { StackScreenProps } from "@react-navigation/stack";
+import Header from "../global/Header/Header";
+import { GoogleSignOut } from "@/services/Auth/GoogleSign";
 
 interface Props extends StackScreenProps<ProfileStackParamList, "Profile"> {
   // other props ...
@@ -42,6 +44,14 @@ export default function Profile({ route, navigation }: Props) {
 
   return (
     <View style={GlobalStyle.body}>
+      <Header>
+        <>
+          <View></View>
+          <GoogleSignOut style={GlobalStyle.headerPressable}>
+            <Text style={GlobalStyle.headerPressableLabel}>Sign out</Text>
+          </GoogleSignOut>
+        </>
+      </Header>
       <Text style={GlobalStyle.mainLabel}>Your program</Text>
       <FlatList
         contentContainerStyle={GlobalStyle.listContainer}

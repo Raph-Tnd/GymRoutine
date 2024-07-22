@@ -17,7 +17,7 @@ export default function SessionChange({
     setCurrentSessionIndex(currentSessionIndex + (previous ? -1 : 1));
   };
   return (
-    <View style={GlobalStyle.header}>
+    <>
       {currentSessionIndex > 0 ? (
         <Pressable
           style={GlobalStyle.headerPressable}
@@ -38,6 +38,6 @@ export default function SessionChange({
       ) : (
         <View></View>
       )}
-    </View>
+    </>
   );
 }

@@ -11,6 +11,7 @@ import { AuthContext } from "../global/Provider/AuthProvider";
 import { GlobalAlert } from "../global/GlobalAlert/GlobalAlert";
 import { useSharedValue } from "react-native-reanimated";
 import GlobalAlertStyle from "@/style/global/GlobalAlert/GlobalAlertStyle";
+import Header from "../global/Header/Header";
 
 type ProgramFormNavigationProp = StackNavigationProp<
   ProfileStackParamList,
@@ -60,20 +61,22 @@ export default function CreateProgramHeader() {
 
   return (
     <>
-      <View style={GlobalStyle.header}>
-        <Pressable
-          style={GlobalStyle.headerPressable}
-          onPress={onBackPressHandler}
-        >
-          <Text style={GlobalStyle.headerPressableLabel}>Go back</Text>
-        </Pressable>
-        <Pressable
-          style={GlobalStyle.headerPressable}
-          onPress={onSavePressHandler}
-        >
-          <Text style={GlobalStyle.headerPressableLabel}>Save</Text>
-        </Pressable>
-      </View>
+      <Header>
+        <>
+          <Pressable
+            style={GlobalStyle.headerPressable}
+            onPress={onBackPressHandler}
+          >
+            <Text style={GlobalStyle.headerPressableLabel}>Go back</Text>
+          </Pressable>
+          <Pressable
+            style={GlobalStyle.headerPressable}
+            onPress={onSavePressHandler}
+          >
+            <Text style={GlobalStyle.headerPressableLabel}>Save</Text>
+          </Pressable>
+        </>
+      </Header>
       <GlobalAlert isOpen={isGlobalAlertOpen} toggleSheet={toggleSheet}>
         <SaveProgramErrorDisplay
           text={errorAlertMessage}

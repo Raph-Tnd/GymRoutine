@@ -14,6 +14,7 @@ import { BottomSheet } from "../global/BottomSheet/BottomSheet";
 import GlobalStyle from "@/style/global/GlobalStyle";
 import { ProgramContext } from "../global/Provider/ProgramProvider";
 import SessionChange from "./SessionChange";
+import Header from "../global/Header/Header";
 
 export type TimerContextType = {
   currentTimer: number;
@@ -91,10 +92,12 @@ export default function Session() {
         {
           currentSession != undefined ? (
             <>
-              <SessionChange
-                maxSession={currentProgram?.sessions.length}
-                saveMethod={saveSession}
-              />
+              <Header>
+                <SessionChange
+                  maxSession={currentProgram?.sessions.length}
+                  saveMethod={saveSession}
+                />
+              </Header>
               <Text style={GlobalStyle.mainLabel}>{currentSession.name}</Text>
               <FlatList
                 contentContainerStyle={GlobalStyle.listContainer}

@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import CreateProgramHeader from "../CreateProgramHeader";
 import GlobalStyle from "@/style/global/GlobalStyle";
@@ -8,10 +8,23 @@ import { ProgramModel } from "@/model/ProgramModel";
 import ProgramShortDisplay from "@/components/Program/ProgramShortDisplay";
 import APISingleton from "@/services/APISingleton";
 import { AuthContext } from "@/components/global/Provider/AuthProvider";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { ProfileStackParamList } from "../ProfileStack";
+import { useNavigation } from "@react-navigation/native";
+import Header from "@/components/global/Header/Header";
+
+type ProgramFormNavigationProp = StackNavigationProp<
+  ProfileStackParamList,
+  "Profile"
+>;
 
 export default function BrowseProgram() {
+  const route = useNavigation<ProgramFormNavigationProp>();
   const { currentUser } = useContext(AuthContext);
   const [foundProgram, setFoundProgram] = useState<ProgramModel[]>();
+  const onBackPressHandler = () => {
+    route.goBack();
+  };
   const onSearchHandler = async (text: string) => {
     if (currentUser) {
       let searchResponse = await APISingleton.getInstance().getSearchedPrograms(
@@ -28,7 +41,14 @@ export default function BrowseProgram() {
   }, []);
   return (
     <View style={GlobalStyle.body}>
-      <CreateProgramHeader />
+      <Header>
+        <Pressable
+          style={GlobalStyle.headerPressable}
+          onPress={onBackPressHandler}
+        >
+          <Text style={GlobalStyle.headerPressableLabel}>Go back</Text>
+        </Pressable>
+      </Header>
       <TextInput
         style={BrowseProgramStyle.searchBar}
         onChangeText={onSearchHandler}
