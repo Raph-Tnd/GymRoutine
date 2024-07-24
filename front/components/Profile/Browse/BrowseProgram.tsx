@@ -28,7 +28,7 @@ export default function BrowseProgram() {
   const onSearchHandler = async (text: string) => {
     if (currentUser) {
       let searchResponse = await APISingleton.getInstance().getSearchedPrograms(
-        { user_id: currentUser.user.email, research: text },
+        { user_id: currentUser.user.email, query: text },
       );
       setFoundProgram(searchResponse);
     }

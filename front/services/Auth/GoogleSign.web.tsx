@@ -1,9 +1,10 @@
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useContext } from "react";
-import { JwtPayload, jwtDecode } from "jwt-decode";
-import { Pressable, StyleProp, ViewStyle } from "react-native";
+import { JwtPayload } from "jwt-decode";
+import { Button, Pressable, StyleProp, ViewStyle } from "react-native";
 import { AuthContext, User } from "@/components/global/Provider/AuthProvider";
 import { removeValue } from "@/components/global/Storage";
+import APISingleton from "../APISingleton";
 
 function TokenToUser(userInfo: JwtPayload): User {
   let newUser: User = {
@@ -26,25 +27,18 @@ function TokenToUser(userInfo: JwtPayload): User {
 
 export function GoogleSign() {
   const { setCurrentUser, setIsValidatingUser } = useContext(AuthContext);
-  const ValidateUserAccount = async (user: User) => {
-    setIsValidatingUser(true);
-    //TODO : Validate user
-    setCurrentUser(user);
-    setIsValidatingUser(false);
-  };
+  const googleLogin = useGoogleLogin({
+    flow: "auth-code",
+    redirect_uri: "http://localhost:8081",
+    onSuccess: async (codeResponse) => {},
+    onError: (errorResponse) => console.log(errorResponse),
+  });
+  /* console.log(credentialResponse.credential);
+            let newUser = TokenToUser(jwtDecode(credentialResponse.credential));
+            ValidateUserAccount(newUser); */
   return (
     <>
-      <GoogleLogin
-        onSuccess={(credentialResponse) => {
-          if (credentialResponse.credential) {
-            let newUser = TokenToUser(jwtDecode(credentialResponse.credential));
-            ValidateUserAccount(newUser);
-          }
-        }}
-        onError={() => {
-          console.log("Login Failed");
-        }}
-      />
+      <Button title={"Login with Google"} onPress={googleLogin} />
     </>
   );
 }
