@@ -24,7 +24,7 @@ public partial class GymRoutineContext : DbContext
         _configuration = configuration;
     }
 
-    private readonly IConfiguration _configuration;
+    public readonly IConfiguration _configuration;
     public virtual DbSet<LocalProgramDAO> LocalPrograms { get; set; }
 
     public virtual DbSet<PublicProgramDAO> PublicPrograms { get; set; }
@@ -46,15 +46,18 @@ public partial class GymRoutineContext : DbContext
             entity.OwnsOne(e => e.Content, content =>
             {
                 content.ToJson();
-                //content.OwnsMany(e => e.Sessions, sessions =>
-                //{
-                //    sessions.ToJson();
-                //    sessions.OwnsMany(e => e.Exercises, exercises =>
-                //    {
-                //        exercises.ToJson();
-                //        exercises.OwnsMany(e => e.Metrics)
-                //    })
-                //});
+                content.OwnsMany(e => e.Sessions, sessions =>
+                {
+                    sessions.ToJson();
+                    sessions.OwnsMany(e => e.Exercises, exercises =>
+                    {
+                        exercises.ToJson();
+                        exercises.OwnsMany(e => e.Metrics, metrics =>
+                        {
+                            metrics.ToJson();
+                        });
+                    });
+                });
             });
             entity.Property(e => e.ProgramId).HasColumnName("program_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
