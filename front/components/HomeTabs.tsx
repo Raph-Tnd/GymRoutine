@@ -7,16 +7,16 @@ import ProfileStack from "./Profile/ProfileStack";
 const Tab = createBottomTabNavigator();
 
 export default function HomeTabs() {
-  return (
-    <ProgramProvider>
-      <Tab.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Tab.Screen name="Home" component={Session} />
-        <Tab.Screen name="Profile" component={ProfileStack} />
-      </Tab.Navigator>
-    </ProgramProvider>
-  );
+	return (
+		<ProgramProvider>
+			<Tab.Navigator
+				screenOptions={{
+					headerShown: false,
+				}}
+			>
+				<Tab.Screen name="Home" component={Session} />
+				<Tab.Screen name="Profile" component={ProfileStack} />
+			</Tab.Navigator>
+		</ProgramProvider>
+	);
 }

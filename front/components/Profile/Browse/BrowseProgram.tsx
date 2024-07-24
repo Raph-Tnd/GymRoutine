@@ -14,54 +14,60 @@ import { useNavigation } from "@react-navigation/native";
 import Header from "@/components/global/Header/Header";
 
 type ProgramFormNavigationProp = StackNavigationProp<
-  ProfileStackParamList,
-  "Profile"
+	ProfileStackParamList,
+	"Profile"
 >;
 
 export default function BrowseProgram() {
-  const route = useNavigation<ProgramFormNavigationProp>();
-  const { currentUser } = useContext(AuthContext);
-  const [foundProgram, setFoundProgram] = useState<ProgramModel[]>();
-  const onBackPressHandler = () => {
-    route.goBack();
-  };
-  const onSearchHandler = async (text: string) => {
-    if (currentUser) {
-      let searchResponse = await APISingleton.getInstance().getSearchedPrograms(
-        { user_id: currentUser.user.email, query: text },
-      );
-      setFoundProgram(searchResponse);
-    }
-  };
+	const route = useNavigation<ProgramFormNavigationProp>();
+	const { currentUser } = useContext(AuthContext);
+	const [foundProgram, setFoundProgram] = useState<ProgramModel[]>();
+	const onBackPressHandler = () => {
+		route.goBack();
+	};
+	const onSearchHandler = async (text: string) => {
+		if (currentUser) {
+			let searchResponse =
+				await APISingleton.getInstance().getSearchedPrograms({
+					user_id: currentUser.user.email,
+					query: text,
+				});
+			setFoundProgram(searchResponse);
+		}
+	};
 
-  useEffect(() => {
-    if (foundProgram == undefined) {
-      onSearchHandler("");
-    }
-  }, []);
-  return (
-    <View style={GlobalStyle.body}>
-      <Header>
-        <Pressable
-          style={GlobalStyle.headerPressable}
-          onPress={onBackPressHandler}
-        >
-          <Text style={GlobalStyle.headerPressableLabel}>Go back</Text>
-        </Pressable>
-      </Header>
-      <TextInput
-        style={BrowseProgramStyle.searchBar}
-        onChangeText={onSearchHandler}
-        placeholder="Program name, author..."
-        placeholderTextColor={"rgba(0,0,0,0.5"}
-        selectTextOnFocus={true}
-      ></TextInput>
-      <FlatList
-        contentContainerStyle={GlobalStyle.listContainer}
-        style={GlobalStyle.list}
-        data={foundProgram}
-        renderItem={({ item }) => <ProgramShortDisplay program={item} />}
-      />
-    </View>
-  );
+	useEffect(() => {
+		if (foundProgram == undefined) {
+			onSearchHandler("");
+		}
+	}, []);
+	return (
+		<View style={GlobalStyle.body}>
+			<Header>
+				<Pressable
+					style={GlobalStyle.headerPressable}
+					onPress={onBackPressHandler}
+				>
+					<Text style={GlobalStyle.headerPressableLabel}>
+						Go back
+					</Text>
+				</Pressable>
+			</Header>
+			<TextInput
+				style={BrowseProgramStyle.searchBar}
+				onChangeText={onSearchHandler}
+				placeholder="Program name, author..."
+				placeholderTextColor={"rgba(0,0,0,0.5"}
+				selectTextOnFocus={true}
+			></TextInput>
+			<FlatList
+				contentContainerStyle={GlobalStyle.listContainer}
+				style={GlobalStyle.list}
+				data={foundProgram}
+				renderItem={({ item }) => (
+					<ProgramShortDisplay program={item} />
+				)}
+			/>
+		</View>
+	);
 }

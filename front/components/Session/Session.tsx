@@ -17,122 +17,136 @@ import SessionChange from "./SessionChange";
 import Header from "../global/Header/Header";
 
 export type TimerContextType = {
-  currentTimer: number;
-  setCurrentTimer: (timer: number) => void;
+	currentTimer: number;
+	setCurrentTimer: (timer: number) => void;
 };
 
 export const TimerContext = createContext<TimerContextType>(
-  {} as TimerContextType,
+	{} as TimerContextType,
 );
 
 export default function Session() {
-  const { currentProgram, currentSessionIndex, setCurrentProgram } =
-    useContext(ProgramContext);
-  const [currentSession, setCurrentSession] = useState<SessionModel>();
-  const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseModel>();
-  const [metricToUpdate, setMetricToUpdate] = useState<MetricModel>();
-  const [toolToDisplay, setToolToDisplay] = useState<ToolModel>();
-  const [currentTimer, setCurrentTimer] = useState(0);
-  const isBottomSheetOpen = useSharedValue(false);
-  const saveSession = () => {
-    if (currentProgram && currentSession) {
-      let newCurrentProgram = currentProgram;
-      newCurrentProgram.sessions[currentSessionIndex] = currentSession;
-      setCurrentProgram({ ...newCurrentProgram });
-    }
-  };
-  const toggleSheet = () => {
-    isBottomSheetOpen.value = !isBottomSheetOpen.value;
-  };
-  const onUpdateMetricHandler = (
-    exercise: ExerciseModel,
-    metric: MetricModel,
-  ) => {
-    setToolToDisplay(undefined);
-    setExerciseToUpdate(exercise);
-    setMetricToUpdate(metric);
-    toggleSheet();
-  };
-  const updateMetricOnExercise = (metric: MetricModel) => {
-    if (exerciseToUpdate != undefined) {
-      exerciseToUpdate.metrics[
-        exerciseToUpdate.metrics.findIndex((x) => x.name === metric.name)
-      ] = metric;
-      let tempSession: SessionModel | undefined = currentSession;
-      if (tempSession != undefined) {
-        tempSession.exercises[
-          tempSession.exercises.findIndex((x) =>
-            exerciseEquals(x, exerciseToUpdate),
-          )
-        ] = exerciseToUpdate;
-        setCurrentSession({ ...tempSession });
-      }
-      toggleSheet();
-    }
-  };
-  const onUpdateToolHandler = (tool: ToolModel) => {
-    setExerciseToUpdate(undefined);
-    setMetricToUpdate(undefined);
-    setToolToDisplay(tool);
-    toggleSheet();
-  };
-  useEffect(() => {
-    if (currentSession === undefined && currentProgram != undefined) {
-      setCurrentSession(currentProgram.sessions[currentSessionIndex]);
-    }
-  }, [currentProgram]);
-  useEffect(() => {
-    if (currentProgram != undefined) {
-      setCurrentSession(currentProgram.sessions[currentSessionIndex]);
-    }
-  }, [currentSessionIndex]);
-  return (
-    <TimerContext.Provider value={{ currentTimer, setCurrentTimer }}>
-      <View style={GlobalStyle.body}>
-        {
-          currentSession != undefined ? (
-            <>
-              <Header>
-                <SessionChange
-                  maxSession={currentProgram?.sessions.length}
-                  saveMethod={saveSession}
-                />
-              </Header>
-              <Text style={GlobalStyle.mainLabel}>{currentSession.name}</Text>
-              <FlatList
-                contentContainerStyle={GlobalStyle.listContainer}
-                style={GlobalStyle.list}
-                data={currentSession.exercises}
-                renderItem={({ item }) => (
-                  <Exercise
-                    exercise={item}
-                    callUpdateMetricMethod={onUpdateMetricHandler}
-                  />
-                )}
-              />
-              <ToolList
-                callUpdateMethod={onUpdateToolHandler}
-                exerciseTimers={currentSession.exercises.map(
-                  (ex) => ex.pauseTime,
-                )}
-              />
-              {/* Has to be in Session because absolute position inside a scrollview/flatlist isn't working */}
-              <BottomSheet isOpen={isBottomSheetOpen} toggleSheet={toggleSheet}>
-                {metricToUpdate != undefined ? (
-                  <MetricUpdate
-                    metric={metricToUpdate}
-                    updateMethod={updateMetricOnExercise}
-                  />
-                ) : toolToDisplay != undefined ? (
-                  <ToolDisplay tool={toolToDisplay} applyMethod={toggleSheet} />
-                ) : undefined}
-              </BottomSheet>
-            </>
-          ) : (
-            <View />
-          ) /* Button to redirect to a program */
-        }
-      </View>
-    </TimerContext.Provider>
-  );
+	const { currentProgram, currentSessionIndex, setCurrentProgram } =
+		useContext(ProgramContext);
+	const [currentSession, setCurrentSession] = useState<SessionModel>();
+	const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseModel>();
+	const [metricToUpdate, setMetricToUpdate] = useState<MetricModel>();
+	const [toolToDisplay, setToolToDisplay] = useState<ToolModel>();
+	const [currentTimer, setCurrentTimer] = useState(0);
+	const isBottomSheetOpen = useSharedValue(false);
+	const saveSession = () => {
+		if (currentProgram && currentSession) {
+			let newCurrentProgram = currentProgram;
+			newCurrentProgram.sessions[currentSessionIndex] = currentSession;
+			setCurrentProgram({ ...newCurrentProgram });
+		}
+	};
+	const toggleSheet = () => {
+		isBottomSheetOpen.value = !isBottomSheetOpen.value;
+	};
+	const onUpdateMetricHandler = (
+		exercise: ExerciseModel,
+		metric: MetricModel,
+	) => {
+		setToolToDisplay(undefined);
+		setExerciseToUpdate(exercise);
+		setMetricToUpdate(metric);
+		toggleSheet();
+	};
+	const updateMetricOnExercise = (metric: MetricModel) => {
+		if (exerciseToUpdate != undefined) {
+			exerciseToUpdate.metrics[
+				exerciseToUpdate.metrics.findIndex(
+					(x) => x.name === metric.name,
+				)
+			] = metric;
+			let tempSession: SessionModel | undefined = currentSession;
+			if (tempSession != undefined) {
+				tempSession.exercises[
+					tempSession.exercises.findIndex((x) =>
+						exerciseEquals(x, exerciseToUpdate),
+					)
+				] = exerciseToUpdate;
+				setCurrentSession({ ...tempSession });
+			}
+			toggleSheet();
+		}
+	};
+	const onUpdateToolHandler = (tool: ToolModel) => {
+		setExerciseToUpdate(undefined);
+		setMetricToUpdate(undefined);
+		setToolToDisplay(tool);
+		toggleSheet();
+	};
+	useEffect(() => {
+		if (currentSession === undefined && currentProgram != undefined) {
+			setCurrentSession(currentProgram.sessions[currentSessionIndex]);
+		}
+	}, [currentProgram]);
+	useEffect(() => {
+		if (currentProgram != undefined) {
+			setCurrentSession(currentProgram.sessions[currentSessionIndex]);
+		}
+	}, [currentSessionIndex]);
+	return (
+		<TimerContext.Provider value={{ currentTimer, setCurrentTimer }}>
+			<View style={GlobalStyle.body}>
+				{
+					currentSession != undefined ? (
+						<>
+							<Header>
+								<SessionChange
+									maxSession={currentProgram?.sessions.length}
+									saveMethod={saveSession}
+								/>
+							</Header>
+							<Text style={GlobalStyle.mainLabel}>
+								{currentSession.name}
+							</Text>
+							<FlatList
+								contentContainerStyle={
+									GlobalStyle.listContainer
+								}
+								style={GlobalStyle.list}
+								data={currentSession.exercises}
+								renderItem={({ item }) => (
+									<Exercise
+										exercise={item}
+										callUpdateMetricMethod={
+											onUpdateMetricHandler
+										}
+									/>
+								)}
+							/>
+							<ToolList
+								callUpdateMethod={onUpdateToolHandler}
+								exerciseTimers={currentSession.exercises.map(
+									(ex) => ex.pauseTime,
+								)}
+							/>
+							{/* Has to be in Session because absolute position inside a scrollview/flatlist isn't working */}
+							<BottomSheet
+								isOpen={isBottomSheetOpen}
+								toggleSheet={toggleSheet}
+							>
+								{metricToUpdate != undefined ? (
+									<MetricUpdate
+										metric={metricToUpdate}
+										updateMethod={updateMetricOnExercise}
+									/>
+								) : toolToDisplay != undefined ? (
+									<ToolDisplay
+										tool={toolToDisplay}
+										applyMethod={toggleSheet}
+									/>
+								) : undefined}
+							</BottomSheet>
+						</>
+					) : (
+						<View />
+					) /* Button to redirect to a program */
+				}
+			</View>
+		</TimerContext.Provider>
+	);
 }

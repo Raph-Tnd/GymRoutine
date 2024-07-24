@@ -6,25 +6,25 @@ import { View, TextInput } from "react-native";
 import { FormDelimiter } from "./ProgramForm";
 
 export default function MetricForm({
-  metric,
-  onUpdate,
+	metric,
+	onUpdate,
 }: {
-  metric: MetricModel;
-  onUpdate: (metric: MetricModel) => void;
+	metric: MetricModel;
+	onUpdate: (metric: MetricModel) => void;
 }) {
-  const handleChange = (field: keyof MetricModel, value: string) => {
-    onUpdate({ ...metric, [field]: value });
-  };
+	const handleChange = (field: keyof MetricModel, value: string) => {
+		onUpdate({ ...metric, [field]: value });
+	};
 
-  return (
-    <View style={ProgramFormStyle.metric}>
-      <TextInput
-        style={ProgramFormStyle.metricInput}
-        value={metric.name}
-        onChangeText={(value) => handleChange("name", value)}
-        placeholder="Metric"
-      />
-      <FormDelimiter />
-    </View>
-  );
+	return (
+		<View style={ProgramFormStyle.metric}>
+			<TextInput
+				style={ProgramFormStyle.metricInput}
+				value={metric.name}
+				onChangeText={(value) => handleChange("name", value)}
+				placeholder="Metric"
+			/>
+			<FormDelimiter />
+		</View>
+	);
 }

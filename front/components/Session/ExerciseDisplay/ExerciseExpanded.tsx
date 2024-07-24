@@ -6,26 +6,28 @@ import { FlatList } from "react-native-gesture-handler";
 import ExerciseExpandedStyle from "@/style/Session/ExerciseDisplay/ExerciseExpandedStyle";
 
 export default function ExerciseExpanded({
-  metrics,
-  callUpdateMetricMethod,
+	metrics,
+	callUpdateMetricMethod,
 }: {
-  metrics: MetricModel[];
-  callUpdateMetricMethod: (metric: MetricModel) => void;
+	metrics: MetricModel[];
+	callUpdateMetricMethod: (metric: MetricModel) => void;
 }) {
-  return (
-    <View style={ExerciseExpandedStyle.body}>
-      <FlatList
-        contentContainerStyle={ExerciseExpandedStyle.metricListContainer}
-        horizontal={true}
-        style={ExerciseExpandedStyle.metricList}
-        data={metrics}
-        renderItem={({ item }) => (
-          <Metric
-            metric={item}
-            callUpdateMetricMethod={callUpdateMetricMethod}
-          />
-        )}
-      />
-    </View>
-  );
+	return (
+		<View style={ExerciseExpandedStyle.body}>
+			<FlatList
+				contentContainerStyle={
+					ExerciseExpandedStyle.metricListContainer
+				}
+				horizontal={true}
+				style={ExerciseExpandedStyle.metricList}
+				data={metrics}
+				renderItem={({ item }) => (
+					<Metric
+						metric={item}
+						callUpdateMetricMethod={callUpdateMetricMethod}
+					/>
+				)}
+			/>
+		</View>
+	);
 }

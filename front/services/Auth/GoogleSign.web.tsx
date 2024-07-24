@@ -7,62 +7,66 @@ import { removeValue } from "@/components/global/Storage";
 import APISingleton from "../APISingleton";
 
 function TokenToUser(userInfo: JwtPayload): User {
-  let newUser: User = {
-    user: {
-      id: "sub" in userInfo ? (userInfo.sub as string) : "",
-      email: "email" in userInfo ? (userInfo.email as string) : "",
-      familyName:
-        "family_name" in userInfo ? (userInfo.family_name as string) : null,
-      givenName:
-        "given_name" in userInfo ? (userInfo.given_name as string) : null,
-      name: "name" in userInfo ? (userInfo.name as string) : null,
-      photo: "picture" in userInfo ? (userInfo.picture as string) : null,
-    },
-    scopes: [],
-    idToken: null,
-    serverAuthCode: null,
-  };
-  return newUser;
+	let newUser: User = {
+		user: {
+			id: "sub" in userInfo ? (userInfo.sub as string) : "",
+			email: "email" in userInfo ? (userInfo.email as string) : "",
+			familyName:
+				"family_name" in userInfo
+					? (userInfo.family_name as string)
+					: null,
+			givenName:
+				"given_name" in userInfo
+					? (userInfo.given_name as string)
+					: null,
+			name: "name" in userInfo ? (userInfo.name as string) : null,
+			photo: "picture" in userInfo ? (userInfo.picture as string) : null,
+		},
+		scopes: [],
+		idToken: null,
+		serverAuthCode: null,
+	};
+	return newUser;
 }
 
 export function GoogleSign() {
-  const { setCurrentUser, setIsValidatingUser } = useContext(AuthContext);
-  const googleLogin = useGoogleLogin({
-    flow: "auth-code",
-    redirect_uri: "http://localhost:8081",
-    onSuccess: async (codeResponse) => {},
-    onError: (errorResponse) => console.log(errorResponse),
-  });
-  /* console.log(credentialResponse.credential);
+	const { setCurrentUser, setIsValidatingUser } = useContext(AuthContext);
+	const googleLogin = useGoogleLogin({
+		flow: "auth-code",
+		redirect_uri: "http://localhost:8081",
+		onSuccess: async (codeResponse) => {},
+		onError: (errorResponse) => console.log(errorResponse),
+	});
+	/* console.log(credentialResponse.credential);
             let newUser = TokenToUser(jwtDecode(credentialResponse.credential));
             ValidateUserAccount(newUser); */
-  return (
-    <>
-      <Button title={"Login with Google"} onPress={googleLogin} />
-    </>
-  );
+	return (
+		<>
+			<Button title={"Login with Google"} onPress={googleLogin} />
+		</>
+	);
 }
 
 export function GoogleSignOut({
-  children,
-  style,
+	children,
+	style,
 }: {
-  children: React.ReactElement;
-  style: StyleProp<ViewStyle>;
+	children: React.ReactElement;
+	style: StyleProp<ViewStyle>;
 }) {
-  const { setCurrentUser } = useContext(AuthContext);
-  const signOut = async () => {
-    try {
-      setCurrentUser(undefined);
-      removeValue("user");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+	const { setCurrentUser } = useContext(AuthContext);
+	const signOut = async () => {
+		try {
+			setCurrentUser(undefined);
+			removeValue("user");
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
-  return (
-    <Pressable style={style} onPress={signOut}>
-      {children}
-    </Pressable>
-  );
+	return (
+		<Pressable style={style} onPress={signOut}>
+			{children}
+		</Pressable>
+	);
 }

@@ -13,54 +13,59 @@ import Header from "../global/Header/Header";
 import { GoogleSignOut } from "@/services/Auth/GoogleSign";
 
 interface Props extends StackScreenProps<ProfileStackParamList, "Profile"> {
-  // other props ...
+	// other props ...
 }
 
 export default function Profile({ route, navigation }: Props) {
-  const [programSaved, setProgramSaved] = useState<ProgramModel[]>([]);
-  const { currentUser } = useContext(AuthContext);
+	const [programSaved, setProgramSaved] = useState<ProgramModel[]>([]);
+	const { currentUser } = useContext(AuthContext);
 
-  useEffect(() => {
-    let unsubscribed = false;
-    const fetchProgram = async () => {
-      if (
-        (programSaved.length === 0 || route.params?.reload) &&
-        currentUser != undefined
-      ) {
-        let fetchedProgram = await APISingleton.getInstance().getProgramsSaved({
-          user_id: currentUser.user.email,
-        });
-        if (!unsubscribed) {
-          setProgramSaved([...fetchedProgram]);
-        }
-      }
-    };
-    fetchProgram();
-    return () => {
-      unsubscribed = true;
-      navigation.setParams({ reload: false });
-    };
-  }, [route.params?.reload]);
+	useEffect(() => {
+		let unsubscribed = false;
+		const fetchProgram = async () => {
+			if (
+				(programSaved.length === 0 || route.params?.reload) &&
+				currentUser != undefined
+			) {
+				let fetchedProgram =
+					await APISingleton.getInstance().getProgramsSaved({
+						user_id: currentUser.user.email,
+					});
+				if (!unsubscribed) {
+					setProgramSaved([...fetchedProgram]);
+				}
+			}
+		};
+		fetchProgram();
+		return () => {
+			unsubscribed = true;
+			navigation.setParams({ reload: false });
+		};
+	}, [route.params?.reload]);
 
-  return (
-    <View style={GlobalStyle.body}>
-      <Header>
-        <>
-          <View></View>
-          <GoogleSignOut style={GlobalStyle.headerPressable}>
-            <Text style={GlobalStyle.headerPressableLabel}>Sign out</Text>
-          </GoogleSignOut>
-        </>
-      </Header>
-      <Text style={GlobalStyle.mainLabel}>Your program</Text>
-      <FlatList
-        contentContainerStyle={GlobalStyle.listContainer}
-        style={GlobalStyle.list}
-        data={programSaved}
-        renderItem={({ item }) => <ProgramShortDisplay program={item} />}
-        ListFooterComponent={<View style={{ paddingBottom: 10 }} />}
-      />
-      <NewProgramOption />
-    </View>
-  );
+	return (
+		<View style={GlobalStyle.body}>
+			<Header>
+				<>
+					<View></View>
+					<GoogleSignOut style={GlobalStyle.headerPressable}>
+						<Text style={GlobalStyle.headerPressableLabel}>
+							Sign out
+						</Text>
+					</GoogleSignOut>
+				</>
+			</Header>
+			<Text style={GlobalStyle.mainLabel}>Your program</Text>
+			<FlatList
+				contentContainerStyle={GlobalStyle.listContainer}
+				style={GlobalStyle.list}
+				data={programSaved}
+				renderItem={({ item }) => (
+					<ProgramShortDisplay program={item} />
+				)}
+				ListFooterComponent={<View style={{ paddingBottom: 10 }} />}
+			/>
+			<NewProgramOption />
+		</View>
+	);
 }
