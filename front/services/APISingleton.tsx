@@ -1,12 +1,16 @@
 import { storeData } from "@/components/global/Storage";
 import { GoogleToken } from "@/model/Auth/GoogleToken";
 import { ProgramModel } from "@/model/ProgramModel";
+import * as SecureStore from "expo-secure-store";
 
 interface QueryObject {
 	[index: string]: string;
 }
 
-const url = "http://141.145.201.163/GymRoutine";
+const url =
+	!process.env.NODE_ENV || process.env.NODE_ENV === "development"
+		? "http://141.145.201.163:8080/GymRoutine"
+		: "http://141.145.201.163:8080/GymRoutine";
 export default class APISingleton {
 	private static instance: APISingleton;
 	private access_token: string = "";
@@ -27,22 +31,26 @@ export default class APISingleton {
 					Accept: "application/json",
 				},
 			});
+			console.log(response);
 			if (response.ok) {
+				console.log("ok");
 				let token: GoogleToken = await response.json();
 				this.access_token = token.accessToken;
 				this.access_token_expire_time =
 					Date.now() / 1000 + token.expiresIn - 60;
-				storeData("refresh_token", token.refreshToken);
+				await SecureStore.setItemAsync(
+					"google_refresh_token",
+					token.refreshToken,
+				);
 				return token.idToken;
 			} else {
 				return "";
 			}
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 			return "";
 		}
 	}
-
 	public async getProgramsSaved({
 		user_id,
 	}: {

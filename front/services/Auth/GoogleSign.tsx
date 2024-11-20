@@ -1,61 +1,51 @@
-import {
-	GoogleSignin,
-	GoogleSigninButton,
-	statusCodes,
-} from "@react-native-google-signin/google-signin";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useContext } from "react";
-import { Pressable, StyleProp, ViewStyle } from "react-native";
-import APISingleton from "../services/APISingleton";
-import { AuthContext } from "@/components/global/Provider/AuthProvider";
+import { JwtPayload, jwtDecode } from "jwt-decode";
+import { Button, Pressable, StyleProp, ViewStyle } from "react-native";
+import { AuthContext, User } from "@/components/global/Provider/AuthProvider";
+import { removeValue } from "@/components/global/Storage";
+import APISingleton from "../APISingleton";
+import React from "react";
 
-GoogleSignin.configure({
-	scopes: [], // what API you want to access on behalf of the user, default is email and profile
-	// webClientId: '<FROM DEVELOPER CONSOLE>', // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
-});
-
-export const getCurrentUser = async () => {
-	const currentUser = await GoogleSignin.getCurrentUser();
-	return currentUser;
-};
+function TokenToUser(userInfo: JwtPayload): User {
+	let newUser: User = {
+		user: {
+			id: "sub" in userInfo ? (userInfo.sub as string) : "",
+			email: "email" in userInfo ? (userInfo.email as string) : "",
+			familyName:
+				"family_name" in userInfo
+					? (userInfo.family_name as string)
+					: null,
+			givenName:
+				"given_name" in userInfo
+					? (userInfo.given_name as string)
+					: null,
+			name: "name" in userInfo ? (userInfo.name as string) : null,
+			photo: "picture" in userInfo ? (userInfo.picture as string) : null,
+		},
+		scopes: [],
+		idToken: null,
+		serverAuthCode: null,
+	};
+	return newUser;
+}
 
 export function GoogleSign() {
 	const { setCurrentUser, setIsValidatingUser } = useContext(AuthContext);
-	const signIn = async () => {
-		setIsValidatingUser(true);
-		try {
-			await GoogleSignin.hasPlayServices();
-			const userInfo = await GoogleSignin.signIn();
-			if (
-				await APISingleton.getInstance().PostUserInfo(
-					userInfo.user.email,
-				)
-			) {
-				setCurrentUser(userInfo);
+	const googleLogin = useGoogleLogin({
+		flow: "auth-code",
+		redirect_uri: "http://localhost:8081",
+		onSuccess: async (codeResponse) => {
+			let idToken = await APISingleton.getInstance().getConnect({
+				code: codeResponse.code,
+			});
+			if (idToken != "") {
+				setCurrentUser(TokenToUser(jwtDecode(idToken)));
 			}
-		} catch (error: any) {
-			if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-				// user cancelled the login flow
-			} else if (error.code === statusCodes.IN_PROGRESS) {
-				// operation (e.g. sign in) is in progress already
-			} else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-				// play services not available or outdated
-			} else {
-				// some other error happened
-			}
-		}
-		setIsValidatingUser(false);
-	};
-	return (
-		<>
-			{
-				<GoogleSigninButton
-					size={GoogleSigninButton.Size.Wide}
-					color={GoogleSigninButton.Color.Dark}
-					onPress={signIn}
-				/>
-			}
-		</>
-	);
+		},
+		onError: (errorResponse) => console.log(errorResponse),
+	});
+	return <Button title={"Login with Google"} onPress={googleLogin} />;
 }
 
 export function GoogleSignOut({
@@ -68,9 +58,8 @@ export function GoogleSignOut({
 	const { setCurrentUser } = useContext(AuthContext);
 	const signOut = async () => {
 		try {
-			await GoogleSignin.signOut();
 			setCurrentUser(undefined);
-			// setState({ user: null }); // Remember to remove the user from your app's state as well
+			removeValue("user");
 		} catch (error) {
 			console.error(error);
 		}

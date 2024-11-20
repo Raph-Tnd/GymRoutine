@@ -5,13 +5,14 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { AuthContext } from "./global/Provider/AuthProvider";
 import Login from "./Login/Login";
 import HomeTabs from "./HomeTabs";
+import { NavigationContainer } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
 export default function App() {
 	const { currentUser } = useContext(AuthContext);
 	return (
-		<View style={indexStyle.body}>
+		<NavigationContainer>
 			<Stack.Navigator
 				screenOptions={{
 					headerShown: false,
@@ -23,6 +24,6 @@ export default function App() {
 					<Stack.Screen name="Login" component={Login} />
 				)}
 			</Stack.Navigator>
-		</View>
+		</NavigationContainer>
 	);
 }
