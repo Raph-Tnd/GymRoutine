@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+    server:
+        image: raphtnd/back:server
+        container_name: gymroutine_server
+        ports:
+            - "8080:8080"
+        volumes:
+            - /var/log/gymroutine:/app/logs
+        extra_hosts:
+            - "host.docker.internal:host-gateway"

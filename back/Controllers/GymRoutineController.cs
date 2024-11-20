@@ -1,7 +1,9 @@
 using back.Model;
 using back.Model.DAO;
 using back.Model.DTO;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 
@@ -12,13 +14,12 @@ namespace back.Controllers
     public class GymRoutineController : ControllerBase
     {
         private GymRoutineContext _postgresContext;
-        private readonly ILogger<GymRoutineController> _logger;
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(GymRoutineController));
         private static readonly HttpClient _httpClient = new HttpClient();
 
         public GymRoutineController(ILogger<GymRoutineController> logger)
         {
             _postgresContext = new GymRoutineContext();
-            _logger = logger;
         }
 
         private async Task<bool> ValidateAccessToken(string user_id, string accessToken)
@@ -37,7 +38,7 @@ namespace back.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.Error(ex.Message);
                 return false;
             }
         }
@@ -45,7 +46,7 @@ namespace back.Controllers
 
         #region GET
         [HttpGet]
-        [Route("connexionToken")]
+        [Route("connectionToken")]
         public async Task<IActionResult> ConnectionToken(string code)
         {
             try
@@ -60,6 +61,7 @@ namespace back.Controllers
 
                 };
 
+                _logger.Info("Query to google");
                 var content = new FormUrlEncodedContent(values);
                 var response = await _httpClient.PostAsync("https://oauth2.googleapis.com/token", content);
                 var responseString = await response.Content.ReadAsStringAsync();
@@ -69,17 +71,21 @@ namespace back.Controllers
                 {
                     AccessToken = tokenResponse.access_token,
                     RefreshToken = tokenResponse.refresh_token,
-                    ExpiresIn = tokenResponse.expires_in
+                    ExpiresIn = tokenResponse.expires_in,
+                    IdToken = tokenResponse.id_token,
                 };
 
+                _logger.Info("Looking in database");
                 //If the user is new, add it to the database
-                var email = new JwtSecurityToken(tokenResponse.id_token).Claims.First(c => c.Type == "Email").Value;
+                var email = new JwtSecurityToken(tokenResponse.id_token).Claims.First(c => c.Type == "email").Value;
                 try
                 {
                     using (var db = _postgresContext)
                     {
+                        _logger.Debug("Connected to database");
                         if (!db.Users.Any(user => user.UserId == email))
                         {
+                            _logger.Debug("Adding user");
                             db.Users.Add(new UserDAO
                             {
                                 UserId = email,
@@ -91,6 +97,7 @@ namespace back.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.Error(ex);
                     return StatusCode(500);
                 }
 
@@ -98,6 +105,7 @@ namespace back.Controllers
             }
             catch (Exception ex)
             {
+                _logger.Error(ex);
                 return BadRequest($"Error exchanging code for token: {ex.Message}");
             }
 
@@ -107,7 +115,7 @@ namespace back.Controllers
 
         [HttpGet]
         [Route("programSaved")]
-        public async Task<IEnumerable<ProgramDTO>> ProgramSaved(string user_id)
+        public async Task<IActionResult> ProgramSaved(string user_id)
         {
             var programSaved = new List<ProgramDTO>();
             try
@@ -116,21 +124,21 @@ namespace back.Controllers
                 {
                     using (var db = _postgresContext)
                     {
-                        programSaved = db.LocalPrograms.Where(program => program.UserId == user_id).Select(program => new ProgramDTO { Id = program.Id, Content = program.Content }).ToList();
+                        programSaved = db.LocalPrograms.Where(program => program.UserId == user_id).AsNoTracking().Select(program => new ProgramDTO { Id = program.Id, Content = program.Content }).ToList();
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                programSaved = new List<ProgramDTO>();
+                _logger.Error(ex.Message);
+                return StatusCode(500);
             }
-            return programSaved;
+            return Ok(programSaved);
         }
 
         [HttpGet]
         [Route("searchProgram")]
-        public async Task<IEnumerable<ProgramDTO>> SearchProgram(string user_id, string query)
+        public async Task<IActionResult> SearchProgram(string user_id, string query)
         {
             var programSearched = new List<ProgramDTO>();
             try
@@ -149,18 +157,19 @@ namespace back.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                programSearched = new List<ProgramDTO>();
+                _logger.Error(ex.Message);
+                return StatusCode(500);
+
             }
 
-            return programSearched;
+            return Ok(programSearched);
         }
         #endregion GET
 
         #region POST
         [HttpPost]
         [Route("saveLocalProgram")]
-        public async Task<bool> SaveLocalProgram(string user_id, ProgramDTO program)
+        public async Task<IActionResult> SaveLocalProgram(string user_id, ProgramDTO program)
         {
             try
             {
@@ -177,31 +186,31 @@ namespace back.Controllers
                                 ProgramId = program.Id,
                                 Content = program.Content
                             });
-                            return db.SaveChanges() == 1;
+                            return Ok(db.SaveChanges() == 1);
                         }
                         else
                         {
-                            _logger.LogInformation("User cannot add a program or does not exist");
-                            return false;
+                            _logger.Info("User cannot add a program or does not exist");
+                            return BadRequest();
                         }
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("User not valid");
-                    return false;
+                    _logger.Warn("User not valid");
+                    return BadRequest();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return false;
+                _logger.Error(ex.Message);
+                return StatusCode(500);
             }
         }
 
         [HttpPost]
         [Route("savePublicProgram")]
-        public async Task<bool> SavePublicProgram(string user_id, ProgramDTO program)
+        public async Task<IActionResult> SavePublicProgram(string user_id, ProgramDTO program)
         {
             //TODO: check if the user saving in public is the author and has right to save publicaly
             try
@@ -219,25 +228,25 @@ namespace back.Controllers
                                 ProgramId = program.Id,
                                 Content = program.Content
                             });
-                            return db.SaveChanges() == 1;
+                            return Ok(db.SaveChanges() == 1);
                         }
                         else
                         {
-                            _logger.LogInformation("User cannot add a program or does not exist");
-                            return false;
+                            _logger.Info("User cannot add a program or does not exist");
+                            return BadRequest();
                         }
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("User not valid");
-                    return false;
+                    _logger.Warn("User not valid");
+                    return BadRequest();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return false;
+                _logger.Error(ex.Message);
+                return BadRequest();
             }
         }
         #endregion POST
@@ -245,7 +254,7 @@ namespace back.Controllers
         #region DELETE
         [HttpDelete]
         [Route("deleteLocalProgram")]
-        public async Task<bool> DeleteLocalProgram(string user_id, int id)
+        public async Task<IActionResult> DeleteLocalProgram(string user_id, int id)
         {
             try
             {
@@ -257,31 +266,31 @@ namespace back.Controllers
                         if (programFound != null)
                         {
                             db.LocalPrograms.Remove(programFound);
-                            return db.SaveChanges() == 1;
+                            return Ok(db.SaveChanges() == 1);
                         }
                         else
                         {
-                            _logger.LogInformation("User or program does not exist");
-                            return false;
+                            _logger.Info("User or program does not exist");
+                            return BadRequest();
                         }
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("User not valid");
-                    return false;
+                    _logger.Warn("User not valid");
+                    return BadRequest();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return false;
+                _logger.Error(ex.Message);
+                return StatusCode(500);
             }
         }
 
         [HttpDelete]
         [Route("deletePublicProgram")]
-        public async Task<bool> DeletePublicProgram(string user_id, int id)
+        public async Task<IActionResult> DeletePublicProgram(string user_id, int id)
         {
             try
             {
@@ -293,25 +302,25 @@ namespace back.Controllers
                         if (programFound != null)
                         {
                             db.PublicPrograms.Remove(programFound);
-                            return db.SaveChanges() == 1;
+                            return Ok(db.SaveChanges() == 1);
                         }
                         else
                         {
-                            _logger.LogInformation("User does not exist");
-                            return false;
+                            _logger.Info("User does not exist");
+                            return BadRequest();
                         }
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("User not valid");
-                    return false;
+                    _logger.Warn("User not valid");
+                    return BadRequest();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return false;
+                _logger.Error(ex.Message);
+                return StatusCode(500);
             }
         }
         #endregion DELETE

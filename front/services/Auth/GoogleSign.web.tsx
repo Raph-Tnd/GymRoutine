@@ -1,6 +1,6 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { useContext } from "react";
-import { JwtPayload } from "jwt-decode";
+import { JwtPayload, jwtDecode } from "jwt-decode";
 import { Button, Pressable, StyleProp, ViewStyle } from "react-native";
 import { AuthContext, User } from "@/components/global/Provider/AuthProvider";
 import { removeValue } from "@/components/global/Storage";
@@ -34,17 +34,19 @@ export function GoogleSign() {
 	const googleLogin = useGoogleLogin({
 		flow: "auth-code",
 		redirect_uri: "http://localhost:8081",
-		onSuccess: async (codeResponse) => {},
+		onSuccess: async (codeResponse) => {
+			console.log(codeResponse.code);
+			/* let idToken = await APISingleton.getInstance().getConnect({
+				code: codeResponse.code,
+			});
+			if (idToken != "") {
+				setCurrentUser(TokenToUser(jwtDecode(idToken)));
+				console.log("test");
+			} */
+		},
 		onError: (errorResponse) => console.log(errorResponse),
 	});
-	/* console.log(credentialResponse.credential);
-            let newUser = TokenToUser(jwtDecode(credentialResponse.credential));
-            ValidateUserAccount(newUser); */
-	return (
-		<>
-			<Button title={"Login with Google"} onPress={googleLogin} />
-		</>
-	);
+	return <Button title={"Login with Google"} onPress={googleLogin} />;
 }
 
 export function GoogleSignOut({

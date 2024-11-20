@@ -38,14 +38,14 @@ public partial class GymRoutineContext : DbContext
     {
         modelBuilder.Entity<LocalProgramDAO>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("localprogram_pkey");
+            entity.HasKey(e => e.Id).HasName("id");
 
             entity.ToTable("localprogram");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.OwnsOne(e => e.Content, content =>
             {
-                content.ToJson();
+                content.ToJson("content");
                 content.OwnsMany(e => e.Sessions, sessions =>
                 {
                     sessions.ToJson();
@@ -79,9 +79,22 @@ public partial class GymRoutineContext : DbContext
             entity.ToTable("publicprogram");
 
             entity.Property(e => e.ProgramId).HasColumnName("program_id");
-            entity.Property(e => e.Content)
-                .HasColumnType("jsonb")
-                .HasColumnName("content");
+            entity.OwnsOne(e => e.Content, content =>
+            {
+                content.ToJson("content");
+                content.OwnsMany(e => e.Sessions, sessions =>
+                {
+                    sessions.ToJson();
+                    sessions.OwnsMany(e => e.Exercises, exercises =>
+                    {
+                        exercises.ToJson();
+                        exercises.OwnsMany(e => e.Metrics, metrics =>
+                        {
+                            metrics.ToJson();
+                        });
+                    });
+                });
+            });
             entity.Property(e => e.Private).HasColumnName("private");
 
             entity.HasMany(d => d.Users).WithMany(p => p.PublicPrograms)
@@ -106,7 +119,7 @@ public partial class GymRoutineContext : DbContext
         {
             entity.HasKey(e => e.UserId).HasName("user_pkey");
 
-            entity.ToTable("user");
+            entity.ToTable("userapp");
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.UserType).HasColumnName("user_type");

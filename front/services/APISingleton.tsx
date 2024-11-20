@@ -1,11 +1,16 @@
+import { storeData } from "@/components/global/Storage";
+import { GoogleToken } from "@/model/Auth/GoogleToken";
 import { ProgramModel } from "@/model/ProgramModel";
 
 interface QueryObject {
 	[index: string]: string;
 }
 
+const url = "http://141.145.201.163/GymRoutine";
 export default class APISingleton {
 	private static instance: APISingleton;
+	private access_token: string = "";
+	private access_token_expire_time: number = Date.now() / 1000;
 
 	public static getInstance() {
 		if (!APISingleton.instance) {
@@ -14,21 +19,48 @@ export default class APISingleton {
 		return this.instance;
 	}
 
-	public async getProgramsSaved({
-		user_id,
-	}: {
-		user_id: string;
-	}): Promise<ProgramModel[]> {
-		let mocked: ProgramModel = require("@/mocked/Program.json");
-		return [mocked];
-
+	public async getConnect({ code }: { code: string }): Promise<string> {
 		try {
-			let response = await fetch("/programsSaved?user_id=" + user_id, {
+			let response = await fetch(url + "/connectionToken?code=" + code, {
 				method: "GET",
 				headers: {
 					Accept: "application/json",
 				},
 			});
+			if (response.ok) {
+				let token: GoogleToken = await response.json();
+				this.access_token = token.accessToken;
+				this.access_token_expire_time =
+					Date.now() / 1000 + token.expiresIn - 60;
+				storeData("refresh_token", token.refreshToken);
+				return token.idToken;
+			} else {
+				return "";
+			}
+		} catch (error) {
+			console.log(error);
+			return "";
+		}
+	}
+
+	public async getProgramsSaved({
+		user_id,
+	}: {
+		user_id: string;
+	}): Promise<ProgramModel[]> {
+		/* let mocked: ProgramModel = require("@/mocked/Program.json");
+		return [mocked]; */
+
+		try {
+			let response = await fetch(
+				url + "/programsSaved?user_id=" + user_id,
+				{
+					method: "GET",
+					headers: {
+						Accept: "application/json",
+					},
+				},
+			);
 			return response.ok ? response.json() : [];
 		} catch (error) {
 			console.log(error);
@@ -57,7 +89,7 @@ export default class APISingleton {
 			.join("&");
 
 		return true;
-		return fetch("/saveProgram", {
+		return fetch(url + "/saveProgram", {
 			method: "POST",
 			headers: {
 				Accept: "application/json",
@@ -92,7 +124,7 @@ export default class APISingleton {
 			)
 			.join("&");
 		return true;
-		return fetch("/deleteProgram", {
+		return fetch(url + "/deleteProgram", {
 			method: "DELETE",
 			headers: {
 				Accept: "application/json",
@@ -117,12 +149,15 @@ export default class APISingleton {
 	}): Promise<ProgramModel[]> {
 		let mocked: ProgramModel = require("@/mocked/Program.json");
 		return [mocked];
-		return fetch("/searchProgram?user_id=" + user_id + "&query=" + query, {
-			method: "GET",
-			headers: {
-				Accept: "application/json",
+		return fetch(
+			url + "/searchProgram?user_id=" + user_id + "&query=" + query,
+			{
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+				},
 			},
-		})
+		)
 			.then((response) => response.json())
 			.then((response) => {
 				return response.ok ? response.json() : [];
