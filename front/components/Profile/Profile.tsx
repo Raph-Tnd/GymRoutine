@@ -2,7 +2,6 @@ import { View, Text } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { ProgramModel } from "@/model/ProgramModel";
 import APISingleton from "@/services/APISingleton";
-import { AuthContext } from "../global/Provider/AuthProvider";
 import ProgramShortDisplay from "../Program/ProgramShortDisplay";
 import { FlatList } from "react-native-gesture-handler";
 import GlobalStyle from "@/style/global/GlobalStyle";
@@ -11,6 +10,8 @@ import { ProfileStackParamList } from "./ProfileStack";
 import { StackScreenProps } from "@react-navigation/stack";
 import Header from "../global/Header/Header";
 import { GoogleSignOut } from "@/services/Auth/GoogleSign";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 interface Props extends StackScreenProps<ProfileStackParamList, "Profile"> {
 	// other props ...
@@ -18,18 +19,18 @@ interface Props extends StackScreenProps<ProfileStackParamList, "Profile"> {
 
 export default function Profile({ route, navigation }: Props) {
 	const [programSaved, setProgramSaved] = useState<ProgramModel[]>([]);
-	const { currentUser } = useContext(AuthContext);
+	const user = useSelector((state: RootState) => state.auth.user);
 
 	useEffect(() => {
 		let unsubscribed = false;
 		const fetchProgram = async () => {
 			if (
 				(programSaved.length === 0 || route.params?.reload) &&
-				currentUser != undefined
+				user != undefined
 			) {
 				let fetchedProgram =
 					await APISingleton.getInstance().getProgramsSaved({
-						user_id: currentUser.user.email,
+						user_id: user.user.email,
 					});
 				if (!unsubscribed) {
 					setProgramSaved([...fetchedProgram]);

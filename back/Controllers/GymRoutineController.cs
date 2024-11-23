@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth;
+using Newtonsoft.Json.Linq;
 
 namespace back.Controllers
 {
@@ -22,18 +25,12 @@ namespace back.Controllers
             _postgresContext = new GymRoutineContext();
         }
 
-        private async Task<bool> ValidateAccessToken(string user_id, string accessToken)
+        private async Task<bool> ValidateAccessToken(string user_id, string idToken)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"https://oauth2.googleapis.com/tokeninfo?access_token={accessToken}");
-                var responseString = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonSerializer.Deserialize<GoogleAccessTokenDAO>(responseString);
-                return tokenResponse != null
-                    && tokenResponse.AuthorizedParty == _postgresContext._configuration.GetSection("GoogleAPI").GetValue("ClientID", "")
-                    && tokenResponse.EmailVerified == "true"
-                    && tokenResponse.Email == user_id
-                    && !tokenResponse.IsExpired();
+                GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
+                return true;
 
             }
             catch (Exception ex)
@@ -51,33 +48,10 @@ namespace back.Controllers
         {
             try
             {
-                var values = new Dictionary<string, string>
-                {
-                    {"code", code },
-                    {"client_id", _postgresContext._configuration.GetSection("GoogleAPI").GetValue("ClientID", "") },
-                    {"client_secret", _postgresContext._configuration.GetSection("GoogleAPI").GetValue("ClientSecret", "") },
-                    {"redirect_uri",  "http://localhost:8081"},
-                    {"grant_type", "authorization_code" }
-
-                };
-
-                _logger.Info("Query to google");
-                var content = new FormUrlEncodedContent(values);
-                var response = await _httpClient.PostAsync("https://oauth2.googleapis.com/token", content);
-                var responseString = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonSerializer.Deserialize<GoogleTokenResponseDTO>(responseString);
-
-                var result = new
-                {
-                    AccessToken = tokenResponse.access_token,
-                    RefreshToken = tokenResponse.refresh_token,
-                    ExpiresIn = tokenResponse.expires_in,
-                    IdToken = tokenResponse.id_token,
-                };
-
+                GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(code);
                 _logger.Info("Looking in database");
                 //If the user is new, add it to the database
-                var email = new JwtSecurityToken(tokenResponse.id_token).Claims.First(c => c.Type == "email").Value;
+                var email = payload.Email;
                 try
                 {
                     using (var db = _postgresContext)
@@ -101,52 +75,12 @@ namespace back.Controllers
                     return StatusCode(500);
                 }
 
-                return Ok(result);
+                return Ok();
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
                 return BadRequest($"Error exchanging code for token: {ex.Message}");
-            }
-
-
-        }
-
-        [HttpGet]
-        [Route("refreshToken")]
-        public async Task<IActionResult> refreshToken(string refreshToken)
-        {
-            try
-            {
-                var values = new Dictionary<string, string>
-                {
-                    {"refresh_token", refreshToken },
-                    {"client_id", _postgresContext._configuration.GetSection("GoogleAPI").GetValue("ClientID", "") },
-                    {"client_secret", _postgresContext._configuration.GetSection("GoogleAPI").GetValue("ClientSecret", "") },
-                    {"grant_type", "refresh_token" }
-
-                };
-
-                _logger.Info("Query to google");
-                var content = new FormUrlEncodedContent(values);
-                var response = await _httpClient.PostAsync("https://oauth2.googleapis.com/token", content);
-                var responseString = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonSerializer.Deserialize<GoogleTokenResponseDTO>(responseString);
-
-                var result = new
-                {
-                    AccessToken = tokenResponse.access_token,
-                    RefreshToken = tokenResponse.refresh_token,
-                    ExpiresIn = tokenResponse.expires_in,
-                    IdToken = tokenResponse.id_token,
-                };
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-                return BadRequest($"Error refreshing token: {ex.Message}");
             }
 
 

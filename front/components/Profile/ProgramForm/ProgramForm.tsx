@@ -2,20 +2,18 @@
 import React, { useContext } from "react";
 import { TextInput, ScrollView, View } from "react-native";
 import SessionForm from "./SessionForm";
-import { ProgramModel } from "@/model/ProgramModel";
 import { SessionModel, newSession } from "@/model/SessionModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
-import { AuthContext } from "@/components/global/Provider/AuthProvider";
 import AddRemoveFormBloc from "./AddRemoveFormBloc";
 import { FlatList } from "react-native-gesture-handler";
 import CreateProgramHeader from "../CreateProgramHeader";
 import { CreatedProgramContext } from "@/components/global/Provider/CreatedProgramProvider";
 import { Colors } from "@/style/Colors";
-import { GlobalAlert } from "@/components/global/GlobalAlert/GlobalAlert";
 import GlobalStyle from "@/style/global/GlobalStyle";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 export default function ProgramForm() {
-	const { currentUser } = useContext(AuthContext);
 	const { currentCreatedProgram, setCurrentCreatedProgram } = useContext(
 		CreatedProgramContext,
 	);

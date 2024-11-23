@@ -1,15 +1,16 @@
-import { useGoogleLogin } from "@react-oauth/google";
-import { useContext } from "react";
+import { useEffect } from "react";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { Button, Pressable, StyleProp, ViewStyle } from "react-native";
-import { AuthContext, User } from "@/components/global/Provider/AuthProvider";
 import { removeValue } from "@/components/global/Storage";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/features/auth/authSlice";
-import { mainApi, useConnectQuery } from "@/features/api/apiSlice";
+import { reset, setUser, User } from "@/features/auth/authSlice";
 import { AppDispatch } from "@/app/store";
+import * as AuthSession from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import { mainApi } from "@/features/api/apiSlice";
 
+WebBrowser.maybeCompleteAuthSession();
 function TokenToUser(userInfo: JwtPayload): User {
 	let newUser: User = {
 		user: {
@@ -35,25 +36,30 @@ function TokenToUser(userInfo: JwtPayload): User {
 
 export function GoogleSign() {
 	const dispatch = useDispatch<AppDispatch>();
-	const googleLogin = useGoogleLogin({
-		flow: "auth-code",
-		redirect_uri: "http://localhost:8081",
-		onSuccess: async (codeResponse) => {
-			try {
-				const result = await dispatch(
-					mainApi.endpoints.connect.initiate(codeResponse.code),
-				).unwrap();
-				// Decode the JWT token and dispatch to set user
-				const user = TokenToUser(jwtDecode(result));
-				dispatch(setUser(user));
-			} catch (error) {
-				// Handle the error from the API call
-				console.error("Failed to connect:", error);
-			}
-		},
-		onError: (errorResponse) => console.log(errorResponse),
+	const [request, response, promptAsync] = AuthSession.useIdTokenAuthRequest({
+		webClientId:
+			"620859170647-2ih3o74dhd7qmhf4vglrh3ag1jse9bk7.apps.googleusercontent.com",
 	});
-	return <Button title={"Login with Google"} onPress={googleLogin} />;
+	useEffect(() => {
+		const validateUser = async () => {
+			if (response?.type === "success") {
+				const { id_token } = response.params;
+				try {
+					const result = await dispatch(
+						mainApi.endpoints.connect.initiate(id_token),
+					);
+					if (result.isSuccess) {
+						const user = TokenToUser(jwtDecode(id_token));
+						dispatch(setUser(user));
+					}
+				} catch (error) {
+					console.error("Failed to connect:", error);
+				}
+			}
+		};
+		validateUser();
+	}, [response]);
+	return <Button title={"Login with Google"} onPress={() => promptAsync()} />;
 }
 
 export function GoogleSignOut({
@@ -63,10 +69,10 @@ export function GoogleSignOut({
 	children: React.ReactElement;
 	style: StyleProp<ViewStyle>;
 }) {
-	const { setCurrentUser } = useContext(AuthContext);
+	const dispatch = useDispatch<AppDispatch>();
 	const signOut = async () => {
 		try {
-			setCurrentUser(undefined);
+			dispatch(reset());
 			removeValue("user");
 		} catch (error) {
 			console.error(error);

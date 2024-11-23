@@ -11,31 +11,12 @@ export const mainApi = createApi({
 		baseUrl: "http://141.145.201.163/GymRoutine/",
 	}),
 	endpoints: (builder) => ({
-		connect: builder.query<string, string>({
+		connect: builder.query<void, string>({
 			query: (code) => `connectionToken?code=${code}`,
-			transformResponse: (response: GoogleToken): string => {
-				//missing access token and expires token gestion
-				if (Platform.OS === "web") {
-					storeData("google_refresh_token", response.refreshToken);
-				} else {
-					SecureStore.setItemAsync(
-						"google_refresh_token",
-						response.refreshToken,
-					);
-				}
-				return response.idToken;
-			},
-		}),
-		connectWithRefreshToken: builder.query<string, undefined>({
-			query: (refreshToken) => `refreshToken/${refreshToken}`,
-			transformResponse: (response: GoogleToken) => {
-				//missing access token and expires token gestion
-				return response.idToken;
-			},
 		}),
 	}),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useConnectQuery, useConnectWithRefreshTokenQuery } = mainApi;
+export const { useConnectQuery } = mainApi;

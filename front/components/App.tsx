@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { AuthContext } from "./global/Provider/AuthProvider";
 import Login from "./Login/Login";
 import HomeTabs from "./HomeTabs";
 import { useSelector } from "react-redux";

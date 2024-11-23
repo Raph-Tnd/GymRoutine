@@ -10,7 +10,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ProfileStackParamList } from "../Profile/ProfileStack";
 import APISingleton from "@/services/APISingleton";
-import { AuthContext } from "../global/Provider/AuthProvider";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 type ProgramFormNavigationProp = StackNavigationProp<
 	ProfileStackParamList,
@@ -22,7 +23,7 @@ export default function ProgramExpandedDisplay({
 }: {
 	program: ProgramModel;
 }) {
-	const { currentUser } = useContext(AuthContext);
+	const user = useSelector((state: RootState) => state.auth.user);
 	const navigation = useNavigation<ProgramFormNavigationProp>();
 	const { setCurrentProgram } = useContext(ProgramContext);
 	const { setCurrentCreatedProgram } = useContext(CreatedProgramContext);
@@ -34,9 +35,9 @@ export default function ProgramExpandedDisplay({
 		navigation.navigate("ProgramForm", { update: true });
 	};
 	const onDeletePressHandler = () => {
-		if (currentUser) {
+		if (user) {
 			APISingleton.getInstance().deleteSavedProgram({
-				user_id: currentUser.user.email,
+				user_id: user.user.email,
 				program: program,
 			});
 			navigation.navigate("Profile", { reload: true });

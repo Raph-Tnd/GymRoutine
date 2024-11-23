@@ -1,8 +1,8 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { getMyStringValue, storeData } from "../Storage";
 import { ProgramModel, newProgram } from "@/model/ProgramModel";
-import { newSession } from "@/model/SessionModel";
-import { AuthContext } from "./AuthProvider";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 export type CreatedProgramContextType = {
 	currentCreatedProgram: ProgramModel | undefined;
@@ -20,7 +20,7 @@ export function CreatedProgramProvider({
 }) {
 	const [currentCreatedProgram, setCurrentCreatedProgram] =
 		useState<ProgramModel>();
-	const { currentUser } = useContext(AuthContext);
+	const user = useSelector((state: RootState) => state.auth.user);
 
 	useEffect(() => {
 		if (currentCreatedProgram != undefined) {
@@ -35,10 +35,7 @@ export function CreatedProgramProvider({
 				let newProgram: ProgramModel = JSON.parse(storedProgram);
 				setCurrentCreatedProgram(newProgram);
 			} else {
-				if (currentUser)
-					setCurrentCreatedProgram(
-						newProgram(currentUser.user.email),
-					);
+				if (user) setCurrentCreatedProgram(newProgram(user.user.email));
 			}
 		};
 		if (!currentCreatedProgram) {

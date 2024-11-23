@@ -7,11 +7,12 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { CreatedProgramContext } from "../global/Provider/CreatedProgramProvider";
 import { newProgram, validateProgram } from "@/model/ProgramModel";
 import APISingleton from "@/services/APISingleton";
-import { AuthContext } from "../global/Provider/AuthProvider";
 import { GlobalAlert } from "../global/GlobalAlert/GlobalAlert";
 import { useSharedValue } from "react-native-reanimated";
 import GlobalAlertStyle from "@/style/global/GlobalAlert/GlobalAlertStyle";
 import Header from "../global/Header/Header";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 type ProgramFormNavigationProp = StackNavigationProp<
 	ProfileStackParamList,
@@ -19,7 +20,8 @@ type ProgramFormNavigationProp = StackNavigationProp<
 >;
 export default function CreateProgramHeader() {
 	const [errorAlertMessage, setErrorAlertMessage] = useState("");
-	const { currentUser } = useContext(AuthContext);
+	const user = useSelector((state: RootState) => state.auth.user);
+
 	const { currentCreatedProgram, setCurrentCreatedProgram } = useContext(
 		CreatedProgramContext,
 	);
@@ -33,17 +35,17 @@ export default function CreateProgramHeader() {
 	};
 	const onSavePressHandler = async () => {
 		if (
-			currentUser &&
+			user &&
 			currentCreatedProgram &&
 			validateProgram(currentCreatedProgram)
 		) {
 			if (
 				await APISingleton.getInstance().postSaveProgram({
-					user_id: currentUser.user.email,
+					user_id: user.user.email,
 					program: currentCreatedProgram,
 				})
 			) {
-				setCurrentCreatedProgram(newProgram(currentUser.user.email));
+				setCurrentCreatedProgram(newProgram(user.user.email));
 				route.navigate("Profile", { reload: true });
 			} else {
 				setErrorAlertMessage(
