@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFonts } from "expo-font";
 import { AuthProvider } from "@/components/global/Provider/AuthProvider";
 import App from "@/components/App";
+import { NavigationContainer } from "@react-navigation/native";
 
 export default function index() {
 	const [fontsLoaded, fontsError] = useFonts({

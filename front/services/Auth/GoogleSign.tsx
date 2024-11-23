@@ -40,7 +40,9 @@ export function GoogleSign() {
 				code: codeResponse.code,
 			});
 			if (idToken != "") {
-				setCurrentUser(TokenToUser(jwtDecode(idToken)));
+				let temp = TokenToUser(jwtDecode(idToken));
+				console.log(temp);
+				setCurrentUser(temp);
 			}
 		},
 		onError: (errorResponse) => console.log(errorResponse),

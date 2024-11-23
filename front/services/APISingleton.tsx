@@ -2,6 +2,7 @@ import { storeData } from "@/components/global/Storage";
 import { GoogleToken } from "@/model/Auth/GoogleToken";
 import { ProgramModel } from "@/model/ProgramModel";
 import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 
 interface QueryObject {
 	[index: string]: string;
@@ -31,17 +32,20 @@ export default class APISingleton {
 					Accept: "application/json",
 				},
 			});
-			console.log(response);
 			if (response.ok) {
-				console.log("ok");
 				let token: GoogleToken = await response.json();
 				this.access_token = token.accessToken;
 				this.access_token_expire_time =
 					Date.now() / 1000 + token.expiresIn - 60;
-				await SecureStore.setItemAsync(
-					"google_refresh_token",
-					token.refreshToken,
-				);
+				if(Platform.OS === 'web'){
+					await storeData("google_refresh_token", token.refreshToken);
+				}
+				else{
+					await SecureStore.setItemAsync(
+						"google_refresh_token",
+						token.refreshToken,
+					);
+				}
 				return token.idToken;
 			} else {
 				return "";
@@ -155,8 +159,8 @@ export default class APISingleton {
 		user_id: string;
 		query: string;
 	}): Promise<ProgramModel[]> {
-		let mocked: ProgramModel = require("@/mocked/Program.json");
-		return [mocked];
+		/* let mocked: ProgramModel = require("@/mocked/Program.json");
+		return [mocked]; */
 		return fetch(
 			url + "/searchProgram?user_id=" + user_id + "&query=" + query,
 			{
