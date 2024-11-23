@@ -3,18 +3,20 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { AuthContext } from "./global/Provider/AuthProvider";
 import Login from "./Login/Login";
 import HomeTabs from "./HomeTabs";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 const Stack = createStackNavigator();
 
 export default function App() {
-	const { currentUser } = useContext(AuthContext);
+	const user = useSelector((state: RootState) => state.auth.user);
 	return (
 		<Stack.Navigator
 			screenOptions={{
 				headerShown: false,
 			}}
 		>
-			{currentUser != undefined ? (
+			{user != undefined ? (
 				<Stack.Screen name="HomeTabs" component={HomeTabs} />
 			) : (
 				<Stack.Screen name="Login" component={Login} />

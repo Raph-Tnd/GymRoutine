@@ -4,8 +4,11 @@ import { JwtPayload, jwtDecode } from "jwt-decode";
 import { Button, Pressable, StyleProp, ViewStyle } from "react-native";
 import { AuthContext, User } from "@/components/global/Provider/AuthProvider";
 import { removeValue } from "@/components/global/Storage";
-import APISingleton from "../APISingleton";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/features/auth/authSlice";
+import { mainApi, useConnectQuery } from "@/features/api/apiSlice";
+import { AppDispatch } from "@/app/store";
 
 function TokenToUser(userInfo: JwtPayload): User {
 	let newUser: User = {
@@ -31,18 +34,21 @@ function TokenToUser(userInfo: JwtPayload): User {
 }
 
 export function GoogleSign() {
-	const { setCurrentUser, setIsValidatingUser } = useContext(AuthContext);
+	const dispatch = useDispatch<AppDispatch>();
 	const googleLogin = useGoogleLogin({
 		flow: "auth-code",
 		redirect_uri: "http://localhost:8081",
 		onSuccess: async (codeResponse) => {
-			let idToken = await APISingleton.getInstance().getConnect({
-				code: codeResponse.code,
-			});
-			if (idToken != "") {
-				let temp = TokenToUser(jwtDecode(idToken));
-				console.log(temp);
-				setCurrentUser(temp);
+			try {
+				const result = await dispatch(
+					mainApi.endpoints.connect.initiate(codeResponse.code),
+				).unwrap();
+				// Decode the JWT token and dispatch to set user
+				const user = TokenToUser(jwtDecode(result));
+				dispatch(setUser(user));
+			} catch (error) {
+				// Handle the error from the API call
+				console.error("Failed to connect:", error);
 			}
 		},
 		onError: (errorResponse) => console.log(errorResponse),

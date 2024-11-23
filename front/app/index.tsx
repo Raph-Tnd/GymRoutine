@@ -2,9 +2,10 @@ import React from "react";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFonts } from "expo-font";
-import { AuthProvider } from "@/components/global/Provider/AuthProvider";
 import App from "@/components/App";
-import { NavigationContainer } from "@react-navigation/native";
+import { store } from "./store";
+import { Provider } from "react-redux";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export default function index() {
 	const [fontsLoaded, fontsError] = useFonts({
@@ -13,9 +14,11 @@ export default function index() {
 	return (
 		fontsLoaded && (
 			<GestureHandlerRootView>
-				<AuthProvider>
-					<App />
-				</AuthProvider>
+				<Provider store={store}>
+					<GoogleOAuthProvider clientId="620859170647-2ih3o74dhd7qmhf4vglrh3ag1jse9bk7.apps.googleusercontent.com">
+						<App />
+					</GoogleOAuthProvider>
+				</Provider>
 			</GestureHandlerRootView>
 		)
 	);
