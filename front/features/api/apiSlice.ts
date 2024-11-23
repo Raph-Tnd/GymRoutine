@@ -1,8 +1,4 @@
-import { storeData } from "@/components/global/Storage";
-import { GoogleToken } from "@/model/Auth/GoogleToken";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Platform } from "react-native";
-import * as SecureStore from "expo-secure-store";
 
 // Define a service using a base URL and expected endpoints
 export const mainApi = createApi({

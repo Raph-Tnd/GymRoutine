@@ -1,17 +1,16 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useContext } from "react";
-import ExerciseExpandedStyle from "@/style/Session/ExerciseDisplay/ExerciseExpandedStyle";
 import ProgramShortDisplayStyle from "@/style/Program/ProgramShortDisplayStyle";
 import { Colors } from "@/style/Colors";
 import { ProgramModel } from "@/model/ProgramModel";
 import { ProgramContext } from "../global/Provider/ProgramProvider";
-import { CreatedProgramContext } from "../global/Provider/CreatedProgramProvider";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ProfileStackParamList } from "../Profile/ProfileStack";
 import APISingleton from "@/services/APISingleton";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/store";
+import { setCreatedProgram } from "@/features/program/createdProgramSlice";
 
 type ProgramFormNavigationProp = StackNavigationProp<
 	ProfileStackParamList,
@@ -26,12 +25,13 @@ export default function ProgramExpandedDisplay({
 	const user = useSelector((state: RootState) => state.auth.user);
 	const navigation = useNavigation<ProgramFormNavigationProp>();
 	const { setCurrentProgram } = useContext(ProgramContext);
-	const { setCurrentCreatedProgram } = useContext(CreatedProgramContext);
+	const dispatch = useDispatch<AppDispatch>();
+
 	const onSelectPressHandler = () => {
 		setCurrentProgram(program);
 	};
 	const onUpdatePressHandler = () => {
-		setCurrentCreatedProgram(program);
+		dispatch(setCreatedProgram(program));
 		navigation.navigate("ProgramForm", { update: true });
 	};
 	const onDeletePressHandler = () => {

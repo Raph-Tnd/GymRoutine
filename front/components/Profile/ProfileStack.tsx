@@ -2,7 +2,6 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Profile from "./Profile";
 import ProgramForm from "./ProgramForm/ProgramForm";
-import { CreatedProgramProvider } from "../global/Provider/CreatedProgramProvider";
 import BrowseProgram from "./Browse/BrowseProgram";
 
 export type ProfileStackParamList = {
@@ -15,16 +14,14 @@ const Stack = createStackNavigator<ProfileStackParamList>();
 
 export default function ProfileStack() {
 	return (
-		<CreatedProgramProvider>
-			<Stack.Navigator
-				screenOptions={{
-					headerShown: false,
-				}}
-			>
-				<Stack.Screen name="Profile" component={Profile} />
-				<Stack.Screen name="ProgramForm" component={ProgramForm} />
-				<Stack.Screen name="BrowseProgram" component={BrowseProgram} />
-			</Stack.Navigator>
-		</CreatedProgramProvider>
+		<Stack.Navigator
+			screenOptions={{
+				headerShown: false,
+			}}
+		>
+			<Stack.Screen name="Profile" component={Profile} />
+			<Stack.Screen name="ProgramForm" component={ProgramForm} />
+			<Stack.Screen name="BrowseProgram" component={BrowseProgram} />
+		</Stack.Navigator>
 	);
 }

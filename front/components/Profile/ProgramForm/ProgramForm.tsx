@@ -1,28 +1,29 @@
 // ProgramForm.tsx
 import React, { useContext } from "react";
-import { TextInput, ScrollView, View } from "react-native";
+import { TextInput, ScrollView, View, AppState } from "react-native";
 import SessionForm from "./SessionForm";
 import { SessionModel, newSession } from "@/model/SessionModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import AddRemoveFormBloc from "./AddRemoveFormBloc";
 import { FlatList } from "react-native-gesture-handler";
 import CreateProgramHeader from "../CreateProgramHeader";
-import { CreatedProgramContext } from "@/components/global/Provider/CreatedProgramProvider";
 import { Colors } from "@/style/Colors";
 import GlobalStyle from "@/style/global/GlobalStyle";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/store";
+import { setCreatedProgram } from "@/features/program/createdProgramSlice";
 
 export default function ProgramForm() {
-	const { currentCreatedProgram, setCurrentCreatedProgram } = useContext(
-		CreatedProgramContext,
+	const currentCreatedProgram = useSelector(
+		(state: RootState) => state.createdProgram,
 	);
+	const dispatch = useDispatch<AppDispatch>();
 
 	const handleProgramNameChange = (name: string) => {
 		if (currentCreatedProgram) {
 			let newCreatedProgram = currentCreatedProgram;
 			newCreatedProgram.name = name;
-			setCurrentCreatedProgram({ ...newCreatedProgram });
+			dispatch(setCreatedProgram({ ...newCreatedProgram }));
 		}
 	};
 
@@ -33,7 +34,7 @@ export default function ProgramForm() {
 				...newCreatedProgram.sessions,
 				newSession(currentCreatedProgram.sessions.length + 1),
 			];
-			setCurrentCreatedProgram({ ...newCreatedProgram });
+			dispatch(setCreatedProgram({ ...newCreatedProgram }));
 		}
 	};
 
@@ -44,7 +45,7 @@ export default function ProgramForm() {
 				0,
 				newCreatedProgram.sessions.length - 1,
 			);
-			setCurrentCreatedProgram({ ...newCreatedProgram });
+			dispatch(setCreatedProgram({ ...newCreatedProgram }));
 		}
 	};
 
@@ -52,7 +53,7 @@ export default function ProgramForm() {
 		if (currentCreatedProgram) {
 			let newCreatedProgram = currentCreatedProgram;
 			newCreatedProgram.sessions[index] = updatedSession;
-			setCurrentCreatedProgram({ ...newCreatedProgram });
+			dispatch(setCreatedProgram({ ...newCreatedProgram }));
 		}
 	};
 
