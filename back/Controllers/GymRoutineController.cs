@@ -112,6 +112,45 @@ namespace back.Controllers
 
         }
 
+        [HttpGet]
+        [Route("refreshToken")]
+        public async Task<IActionResult> refreshToken(string refreshToken)
+        {
+            try
+            {
+                var values = new Dictionary<string, string>
+                {
+                    {"refresh_token", refreshToken },
+                    {"client_id", _postgresContext._configuration.GetSection("GoogleAPI").GetValue("ClientID", "") },
+                    {"client_secret", _postgresContext._configuration.GetSection("GoogleAPI").GetValue("ClientSecret", "") },
+                    {"grant_type", "refresh_token" }
+
+                };
+
+                _logger.Info("Query to google");
+                var content = new FormUrlEncodedContent(values);
+                var response = await _httpClient.PostAsync("https://oauth2.googleapis.com/token", content);
+                var responseString = await response.Content.ReadAsStringAsync();
+                var tokenResponse = JsonSerializer.Deserialize<GoogleTokenResponseDTO>(responseString);
+
+                var result = new
+                {
+                    AccessToken = tokenResponse.access_token,
+                    RefreshToken = tokenResponse.refresh_token,
+                    ExpiresIn = tokenResponse.expires_in,
+                    IdToken = tokenResponse.id_token,
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                return BadRequest($"Error refreshing token: {ex.Message}");
+            }
+
+
+        }
 
         [HttpGet]
         [Route("programSaved")]
