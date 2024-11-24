@@ -13,7 +13,6 @@ export default function App() {
 	const user = useSelector((state: RootState) => state.auth.user);
 	const dispatch = useDispatch<AppDispatch>();
 	useEffect(() => {
-		console.log(user);
 		if (user?.user != undefined) {
 			dispatch(loadCreatedProgram(user.user.email));
 			dispatch(loadCurrentProgram());

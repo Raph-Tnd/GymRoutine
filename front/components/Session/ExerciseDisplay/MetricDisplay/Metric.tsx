@@ -3,18 +3,9 @@ import React from "react";
 import { MetricModel } from "@/model/MetricModel";
 import MetricStyle from "@/style/Session/ExerciseDisplay/MetricDisplay/MetricStyle";
 
-export default function Metric({
-	metric,
-	callUpdateMetricMethod,
-}: {
-	metric: MetricModel;
-	callUpdateMetricMethod: (metric: MetricModel) => void;
-}) {
+export default function Metric({ metric }: { metric: MetricModel }) {
 	return (
-		<Pressable
-			style={MetricStyle.body}
-			onPress={() => callUpdateMetricMethod(metric)}
-		>
+		<Pressable style={MetricStyle.body} onPress={() => {}}>
 			<Text style={MetricStyle.label}>{metric.name}</Text>
 			<Text style={MetricStyle.value}>{metric.value}</Text>
 		</Pressable>

@@ -56,7 +56,7 @@ export default function Profile({ route, navigation }: Props) {
 					</GoogleSignOut>
 				</>
 			</Header>
-			<Text style={GlobalStyle.mainLabel}>Your program</Text>
+			<Text style={GlobalStyle.titleLabel}>Your program</Text>
 			<FlatList
 				contentContainerStyle={GlobalStyle.listContainer}
 				style={GlobalStyle.list}

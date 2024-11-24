@@ -4,10 +4,13 @@ export interface ExerciseModel {
 	name: string;
 	sets: number;
 	repsPerSet: number;
+	wantedRpe: number | undefined;
 	weight: number;
 	weightUnit: "kg" | "lb";
-	pauseTime: number;
+	rmPercentage: number;
+	pauseTime: number | undefined;
 	metrics: MetricModel[];
+	note: string;
 }
 
 export function getPauseTimeFormatted(pauseTime: number): string {
@@ -40,10 +43,13 @@ export function newExercise(): ExerciseModel {
 		name: "",
 		sets: 0,
 		repsPerSet: 0,
+		wantedRpe: undefined,
 		weight: 0,
 		weightUnit: "kg",
-		pauseTime: 0,
+		pauseTime: undefined,
+		rmPercentage: 0,
 		metrics: [],
+		note: "",
 	};
 }
 
@@ -52,8 +58,7 @@ export function validateExercise(exercise: ExerciseModel): boolean {
 		exercise.name != "" &&
 		exercise.sets > 0 &&
 		exercise.repsPerSet > 0 &&
-		exercise.weight >= 0 &&
-		exercise.pauseTime >= 0 /* &&
+		exercise.weight >= 0 /* &&
     exercise.metrics.reduce(
       (previous, metric) => previous && validateMetric(metric),
       true,

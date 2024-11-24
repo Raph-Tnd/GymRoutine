@@ -4,27 +4,25 @@ import { Font } from "../../../Font";
 
 export default StyleSheet.create({
 	body: {
-		marginVertical: 5,
-		marginLeft: 10,
 		paddingHorizontal: 5,
 		flexDirection: "row",
-		backgroundColor: Colors.azure,
 		height: "100%",
-		maxHeight: 30,
-		width: "100%",
-		borderRadius: 10,
-		justifyContent: "center",
 		alignItems: "center",
+		borderRightWidth: 1,
+		borderRightColor: Colors.border_color,
 	},
 	label: {
-		fontSize: 14,
+		padding: 10,
+		color: Colors.text_primary,
 		fontFamily: Font.global,
-		paddingRight: 10,
-		borderRightWidth: 1,
+		fontSize: 14,
 	},
 	value: {
-		paddingLeft: 10,
-		fontSize: 14,
+		padding: 5,
+		color: Colors.text_primary,
 		fontFamily: Font.global,
+		fontSize: 14,
+		backgroundColor: Colors.color_primary_darker,
+		borderRadius: 5,
 	},
 });

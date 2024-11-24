@@ -1,15 +1,4 @@
 export const Colors = {
-	/* Neutral colors */
-	white: "rgba(255, 255, 255, 1)",
-	black: "rgba(0, 0, 0, 1)",
-
-	/* Background colors */
-	color_bg_lightest: "rgba(250, 251, 253, 1)",
-	color_bg_lighter: "rgba(244, 246, 250, 1)",
-	color_bg_light: "rgba(236, 239, 244, 1)",
-	color_bg_base: "rgba(226, 232, 240, 1)",
-	color_bg_dark: "rgba(203, 213, 225, 1)",
-
 	/* Text colors */
 	color_text_lighter: "rgba(148, 163, 184, 1)",
 	color_text_light: "rgba(100, 116, 139, 1)",
@@ -34,7 +23,9 @@ export const Colors = {
 	hover_bg: "rgba(250, 251, 253, 1)", */
 
 	/* Dark mode */
-
+	bg: "rgba(11, 17, 33, 1)",
+	button_color: "rgba(79, 70, 229, 0.2)",
+	button_icon: "rgba(129, 140, 248, 1)",
 	bg_gradient_from: "rgba(15, 23, 42, 1)",
 	bg_gradient_to: "rgba(30, 41, 59, 1)",
 	text_primary: "rgba(255, 255, 255, 1)",

@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { View, Text, Pressable } from "react-native";
+import { createContext, useEffect, useLayoutEffect, useState } from "react";
 import Exercise from "./ExerciseDisplay/Exercise";
 import { SessionModel } from "@/model/SessionModel";
 import { FlatList } from "react-native-gesture-handler";
@@ -12,9 +12,19 @@ import { ToolModel } from "@/model/ToolModel";
 import ToolDisplay from "../Tools/ToolDisplay";
 import { BottomSheet } from "../global/BottomSheet/BottomSheet";
 import GlobalStyle from "@/style/global/GlobalStyle";
-import { ProgramContext } from "../global/Provider/ProgramProvider";
-import SessionChange from "./SessionChange";
-import Header from "../global/Header/Header";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/store";
+import {
+	setCurrentProgram,
+	setSessionIndex,
+	updateSession,
+} from "@/features/program/currentProgramSlice";
+import SessionStyle from "@/style/Program/session/SessionStyle";
+import { useNavigation } from "expo-router";
+import { Colors } from "@/style/Colors";
+import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import { preventAutoHideAsync } from "expo-splash-screen";
+import { storeData } from "../global/Storage";
 
 export type TimerContextType = {
 	currentTimer: number;
@@ -26,21 +36,17 @@ export const TimerContext = createContext<TimerContextType>(
 );
 
 export default function Session() {
-	const { currentProgram, currentSessionIndex, setCurrentProgram } =
-		useContext(ProgramContext);
+	const navigation = useNavigation();
+	const dispatch = useDispatch<AppDispatch>();
+	const currentProgram = useSelector(
+		(state: RootState) => state.currentProgram,
+	);
 	const [currentSession, setCurrentSession] = useState<SessionModel>();
 	const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseModel>();
 	const [metricToUpdate, setMetricToUpdate] = useState<MetricModel>();
 	const [toolToDisplay, setToolToDisplay] = useState<ToolModel>();
 	const [currentTimer, setCurrentTimer] = useState(0);
 	const isBottomSheetOpen = useSharedValue(false);
-	const saveSession = () => {
-		if (currentProgram && currentSession) {
-			let newCurrentProgram = currentProgram;
-			newCurrentProgram.sessions[currentSessionIndex] = currentSession;
-			setCurrentProgram({ ...newCurrentProgram });
-		}
-	};
 	const toggleSheet = () => {
 		isBottomSheetOpen.value = !isBottomSheetOpen.value;
 	};
@@ -53,79 +59,147 @@ export default function Session() {
 		setMetricToUpdate(metric);
 		toggleSheet();
 	};
-	const updateMetricOnExercise = (metric: MetricModel) => {
-		if (exerciseToUpdate != undefined) {
-			exerciseToUpdate.metrics[
-				exerciseToUpdate.metrics.findIndex(
-					(x) => x.name === metric.name,
-				)
-			] = metric;
-			let tempSession: SessionModel | undefined = currentSession;
-			if (tempSession != undefined) {
-				tempSession.exercises[
-					tempSession.exercises.findIndex((x) =>
-						exerciseEquals(x, exerciseToUpdate),
-					)
-				] = exerciseToUpdate;
-				setCurrentSession({ ...tempSession });
+	const updateExercise = (
+		exercise: Partial<ExerciseModel>,
+		index: number,
+	) => {
+		setCurrentSession((prev) => {
+			if (prev) {
+				return {
+					...prev,
+					exercises: prev?.exercises.map((ex, i) =>
+						i === index ? { ...ex, ...exercise } : ex,
+					),
+				};
 			}
-			toggleSheet();
-		}
+		});
 	};
-	const onUpdateToolHandler = (tool: ToolModel) => {
+	/* const onUpdateToolHandler = (tool: ToolModel) => {
 		setExerciseToUpdate(undefined);
 		setMetricToUpdate(undefined);
 		setToolToDisplay(tool);
 		toggleSheet();
-	};
+	}; */
+
 	useEffect(() => {
-		if (currentSession === undefined && currentProgram != undefined) {
-			setCurrentSession(currentProgram.sessions[currentSessionIndex]);
+		if (
+			currentSession == undefined &&
+			currentProgram.program.sessions.length > 0
+		) {
+			//Update session when data finished fetching
+
+			setCurrentSession(
+				JSON.parse(
+					JSON.stringify(
+						currentProgram.program.sessions[
+							currentProgram.sessionIndex
+						],
+					),
+				),
+			);
+		} else {
+			//Store localy and call api when data is saved
+			storeData("currentProgram", JSON.stringify(currentProgram.program));
+			//TODO : call api
+		}
+	}, [currentProgram.program]);
+
+	//Update session when user change index
+	useEffect(() => {
+		if (currentProgram.program.sessions.length > 0) {
+			setCurrentSession(
+				JSON.parse(
+					JSON.stringify(
+						currentProgram.program.sessions[
+							currentProgram.sessionIndex
+						],
+					),
+				),
+			);
+		}
+	}, [currentProgram.sessionIndex]);
+
+	//Update store when user input
+	useEffect(() => {
+		if (currentSession) {
+			dispatch(updateSession(currentSession));
+		}
+	}, [currentSession]);
+	useLayoutEffect(() => {
+		if (currentProgram.program.sessions.length > 0) {
+			navigation.setOptions({
+				headerLeft: () => {
+					return (
+						currentProgram.sessionIndex > 0 && (
+							<Pressable
+								style={GlobalStyle.headerPressable}
+								onPress={() =>
+									dispatch(
+										setSessionIndex(
+											currentProgram.sessionIndex - 1,
+										),
+									)
+								}
+							>
+								<ChevronLeft color={Colors.button_icon} />
+							</Pressable>
+						)
+					);
+				},
+				headerRight: () => {
+					return (
+						currentProgram.sessionIndex <
+							currentProgram.program.sessions.length - 1 && (
+							<Pressable
+								style={GlobalStyle.headerPressable}
+								onPress={() =>
+									dispatch(
+										setSessionIndex(
+											currentProgram.sessionIndex + 1,
+										),
+									)
+								}
+							>
+								<ChevronRight color={Colors.button_icon} />
+							</Pressable>
+						)
+					);
+				},
+			});
 		}
 	}, [currentProgram]);
-	useEffect(() => {
-		if (currentProgram != undefined) {
-			setCurrentSession(currentProgram.sessions[currentSessionIndex]);
-		}
-	}, [currentSessionIndex]);
 	return (
 		<TimerContext.Provider value={{ currentTimer, setCurrentTimer }}>
-			<View style={GlobalStyle.body}>
-				{
-					currentSession != undefined ? (
-						<>
-							<Header>
-								<SessionChange
-									maxSession={currentProgram?.sessions.length}
-									saveMethod={saveSession}
+			<View style={[GlobalStyle.body, SessionStyle.body]}>
+				{currentSession && (
+					<>
+						<Text style={SessionStyle.titleLabel}>
+							{currentSession.name}
+						</Text>
+						<FlatList
+							showsVerticalScrollIndicator={false}
+							contentContainerStyle={SessionStyle.listContainer}
+							style={GlobalStyle.list}
+							data={currentSession.exercises}
+							renderItem={({ item, index }) => (
+								<Exercise
+									exercise={item}
+									index={index}
+									updateExerciseMethod={updateExercise}
+									callUpdateMetricMethod={
+										onUpdateMetricHandler
+									}
 								/>
-							</Header>
-							<Text style={GlobalStyle.mainLabel}>
-								{currentSession.name}
-							</Text>
-							<FlatList
-								contentContainerStyle={
-									GlobalStyle.listContainer
-								}
-								style={GlobalStyle.list}
-								data={currentSession.exercises}
-								renderItem={({ item }) => (
-									<Exercise
-										exercise={item}
-										callUpdateMetricMethod={
-											onUpdateMetricHandler
-										}
-									/>
-								)}
-							/>
-							<ToolList
+							)}
+						/>
+						{/* <ToolList
 								callUpdateMethod={onUpdateToolHandler}
 								exerciseTimers={currentSession.exercises.map(
 									(ex) => ex.pauseTime,
 								)}
-							/>
-							{/* Has to be in Session because absolute position inside a scrollview/flatlist isn't working */}
-							<BottomSheet
+							/> */}
+						{/* Has to be in Session because absolute position inside a scrollview/flatlist isn't working */}
+						{/* <BottomSheet
 								isOpen={isBottomSheetOpen}
 								toggleSheet={toggleSheet}
 							>
@@ -140,12 +214,9 @@ export default function Session() {
 										applyMethod={toggleSheet}
 									/>
 								) : undefined}
-							</BottomSheet>
-						</>
-					) : (
-						<View />
-					) /* Button to redirect to a program */
-				}
+							</BottomSheet> */}
+					</>
+				)}
 			</View>
 		</TimerContext.Provider>
 	);

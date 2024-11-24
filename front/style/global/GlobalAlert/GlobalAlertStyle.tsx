@@ -4,12 +4,14 @@ import { Font } from "@/style/Font";
 
 export default StyleSheet.create({
 	sheet: {
-		backgroundColor: Colors.seasalt,
+		backgroundColor: Colors.card_bg,
 		padding: 16,
 		marginTop: "50%",
 		height: "25%",
 		aspectRatio: 1,
 		borderRadius: 20,
+		borderWidth: 1,
+		borderColor: Colors.border_color,
 		alignSelf: "center",
 		justifyContent: "space-evenly",
 		alignItems: "center",
@@ -22,7 +24,7 @@ export default StyleSheet.create({
 		flex: 1,
 	},
 	pressable: {
-		backgroundColor: Colors.dim_gray,
+		backgroundColor: Colors.color_primary_base,
 		width: "50%",
 		height: "20%",
 		borderRadius: 10,
@@ -33,9 +35,10 @@ export default StyleSheet.create({
 		elevation: 5,
 	},
 	pressablePressing: {
-		backgroundColor: Colors.french_gray,
+		backgroundColor: Colors.color_primary_light,
 	},
 	information: {
+		color: Colors.text_primary,
 		textAlign: "center",
 		fontFamily: Font.global,
 		fontSize: 14,
