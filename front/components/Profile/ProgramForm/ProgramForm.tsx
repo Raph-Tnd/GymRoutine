@@ -1,5 +1,5 @@
 // ProgramForm.tsx
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { TextInput, ScrollView, View, AppState } from "react-native";
 import SessionForm from "./SessionForm";
 import { SessionModel, newSession } from "@/model/SessionModel";
@@ -56,12 +56,16 @@ export default function ProgramForm() {
 			dispatch(setCreatedProgram({ ...newCreatedProgram }));
 		}
 	};
-
+	useEffect(() => {
+		console.log(currentCreatedProgram);
+	}, []);
 	return (
 		<View style={GlobalStyle.body}>
 			<CreateProgramHeader />
-			{currentCreatedProgram && (
-				<ScrollView contentContainerStyle={ProgramFormStyle.body}>
+			<FlatList
+				style={{ width: "95%" }}
+				contentContainerStyle={ProgramFormStyle.body}
+				ListHeaderComponent={
 					<TextInput
 						style={ProgramFormStyle.programLabel}
 						value={currentCreatedProgram.name}
@@ -69,35 +73,29 @@ export default function ProgramForm() {
 						placeholder="Program name"
 						placeholderTextColor={Colors.red}
 					/>
-					<FlatList
-						scrollEnabled={false}
-						data={currentCreatedProgram.sessions}
-						renderItem={({ item, index }) => (
-							<SessionForm
-								key={index}
-								session={item}
-								index={index}
-								onUpdate={(updatedSession) =>
-									updateSession(updatedSession, index)
-								}
-							/>
-						)}
-						ListFooterComponentStyle={
-							ProgramFormStyle.programFooter
-						}
-						ListFooterComponent={
-							<AddRemoveFormBloc
-								style={"Session"}
-								addMethod={addSession}
-								removeMethod={removeSession}
-								removeActive={
-									currentCreatedProgram.sessions.length > 1
-								}
-							/>
+				}
+				scrollEnabled={false}
+				data={currentCreatedProgram.sessions}
+				renderItem={({ item, index }) => (
+					<SessionForm
+						key={index}
+						session={item}
+						index={index}
+						onUpdate={(updatedSession) =>
+							updateSession(updatedSession, index)
 						}
 					/>
-				</ScrollView>
-			)}
+				)}
+				ListFooterComponentStyle={ProgramFormStyle.programFooter}
+				ListFooterComponent={
+					<AddRemoveFormBloc
+						type={"Session"}
+						addMethod={addSession}
+						removeMethod={removeSession}
+						removeActive={currentCreatedProgram.sessions.length > 1}
+					/>
+				}
+			/>
 		</View>
 	);
 }

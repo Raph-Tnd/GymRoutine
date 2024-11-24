@@ -70,7 +70,7 @@ export default function SessionForm({
 				ListFooterComponentStyle={ProgramFormStyle.sessionFooter}
 				ListFooterComponent={
 					<AddRemoveFormBloc
-						style={"Exercise"}
+						type={"Exercise"}
 						addMethod={addExercise}
 						removeMethod={removeExercise}
 						removeActive={session.exercises.length > 1}

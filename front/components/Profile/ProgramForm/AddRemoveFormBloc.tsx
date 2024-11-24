@@ -1,20 +1,23 @@
 import { View, Text, Pressable } from "react-native";
 import React from "react";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
+import { Plus } from "lucide-react-native";
+import { Colors } from "@/style/Colors";
+import GlobalStyle from "@/style/global/GlobalStyle";
 
 export default function AddRemoveFormBloc({
-	style,
+	type,
 	addMethod,
 	removeMethod,
 	removeActive,
 }: {
-	style: "Session" | "Exercise" | "Metric";
+	type: "Session" | "Exercise" | "Metric";
 	addMethod: () => void;
 	removeMethod: () => void;
 	removeActive: boolean;
 }) {
 	const colors = () => {
-		switch (style) {
+		switch (type) {
 			case "Session":
 				return ProgramFormStyle.addRemovePressableSession;
 			case "Exercise":
@@ -37,7 +40,8 @@ export default function AddRemoveFormBloc({
 				style={[ProgramFormStyle.addRemovePressable, colors()]}
 				onPress={addMethod}
 			>
-				<Text style={ProgramFormStyle.addRemoveLabel}>+</Text>
+				<Plus color={Colors.text_primary} />
+				<Text style={ProgramFormStyle.addRemoveLabel}>Add {type}</Text>
 			</Pressable>
 		</View>
 	);

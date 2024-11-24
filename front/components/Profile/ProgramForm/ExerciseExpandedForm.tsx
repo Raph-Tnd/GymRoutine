@@ -57,7 +57,7 @@ export default function ExerciseExpandedForm({
 				ListFooterComponentStyle={ProgramFormStyle.metricFooter}
 				ListFooterComponent={
 					<AddRemoveFormBloc
-						style={"Metric"}
+						type={"Metric"}
 						addMethod={addMetric}
 						removeMethod={removeMetric}
 						removeActive={exercise.metrics.length > 0}
