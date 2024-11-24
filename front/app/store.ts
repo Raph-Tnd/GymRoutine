@@ -1,6 +1,7 @@
 import { mainApi } from "@/features/api/apiSlice";
 import { authSlice } from "@/features/auth/authSlice";
 import { createdProgramSlice } from "@/features/program/createdProgramSlice";
+import { currentProgramSlice } from "@/features/program/currentProgramSlice";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
@@ -8,6 +9,7 @@ export const store = configureStore({
 		[mainApi.reducerPath]: mainApi.reducer,
 		auth: authSlice.reducer,
 		createdProgram: createdProgramSlice.reducer,
+		currentProgram: currentProgramSlice.reducer,
 	},
 
 	middleware: (getDefaultMiddleware) =>

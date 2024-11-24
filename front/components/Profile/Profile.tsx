@@ -10,8 +10,9 @@ import { ProfileStackParamList } from "./ProfileStack";
 import { StackScreenProps } from "@react-navigation/stack";
 import Header from "../global/Header/Header";
 import { GoogleSignOut } from "@/services/Auth/GoogleSign";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/store";
+import { loadCreatedProgram } from "@/features/program/createdProgramSlice";
 
 interface Props extends StackScreenProps<ProfileStackParamList, "Profile"> {
 	// other props ...
@@ -20,7 +21,7 @@ interface Props extends StackScreenProps<ProfileStackParamList, "Profile"> {
 export default function Profile({ route, navigation }: Props) {
 	const [programSaved, setProgramSaved] = useState<ProgramModel[]>([]);
 	const user = useSelector((state: RootState) => state.auth.user);
-
+	const dispatch = useDispatch<AppDispatch>();
 	useEffect(() => {
 		let unsubscribed = false;
 		const fetchProgram = async () => {
@@ -43,7 +44,6 @@ export default function Profile({ route, navigation }: Props) {
 			navigation.setParams({ reload: false });
 		};
 	}, [route.params?.reload]);
-
 	return (
 		<View style={GlobalStyle.body}>
 			<Header>

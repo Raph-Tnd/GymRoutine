@@ -7,13 +7,13 @@ const initialState: ProgramModel = { author: "", name: "", sessions: [] };
 
 export const loadCreatedProgram = createAsyncThunk(
 	"localStorage/loadCreatedProgram",
-	async () => {
+	async (user: string) => {
 		const response = await getMyStringValue("createdProgram");
 		if (response) {
 			let newProgram: ProgramModel = JSON.parse(response);
 			return newProgram;
 		} else {
-			return newProgram("");
+			return newProgram(user);
 		}
 	},
 );
@@ -27,6 +27,7 @@ export const createdProgramSlice = createSlice({
 		},
 	},
 	extraReducers(builder) {
+		console.log("test");
 		builder.addCase(loadCreatedProgram.fulfilled, (state, action) => {
 			state = action.payload;
 		});
