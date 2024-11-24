@@ -39,8 +39,6 @@ export const currentProgramSlice = createSlice({
 	},
 	extraReducers(builder) {
 		builder.addCase(loadCurrentProgram.fulfilled, (state, action) => {
-			console.log("test");
-
 			state.program = action.payload;
 		});
 	},

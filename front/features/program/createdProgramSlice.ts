@@ -27,7 +27,6 @@ export const createdProgramSlice = createSlice({
 		},
 	},
 	extraReducers(builder) {
-		console.log("test");
 		builder.addCase(loadCreatedProgram.fulfilled, (state, action) => {
 			state = action.payload;
 		});
