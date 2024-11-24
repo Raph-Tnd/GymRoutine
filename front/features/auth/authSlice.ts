@@ -1,8 +1,5 @@
-import { getMyStringValue } from "@/components/global/Storage";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { Platform } from "react-native";
-import * as SecureStore from "expo-secure-store";
 
 export type User = {
 	user: {
