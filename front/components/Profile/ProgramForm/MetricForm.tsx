@@ -1,5 +1,5 @@
 // MetricForm.tsx
-import { FormDelimiter } from "@/app/(tabs)/(profile)/(create)/create";
+import { FormDelimiter } from "@/app/(tabs)/profile/(create)/create";
 import { MetricModel } from "@/model/MetricModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import React from "react";

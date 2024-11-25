@@ -14,9 +14,9 @@ export default function ProfileStack() {
 			}}
 			initialRouteName="index"
 		>
-			<Stack.Screen name="Profile" />
-			<Stack.Screen name="ProgramForm" />
-			<Stack.Screen name="BrowseProgram" />
+			<Stack.Screen name="index" />
+			<Stack.Screen name="(create)/create" />
+			<Stack.Screen name="(browse)/browse" />
 		</Stack>
 	);
 }

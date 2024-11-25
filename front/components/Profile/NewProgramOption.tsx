@@ -6,10 +6,10 @@ import { useRouter } from "expo-router";
 export default function NewProgramOption() {
 	const router = useRouter();
 	const onCreatePressHandler = () => {
-		router.replace("/(tabs)/(profile)/(create)/create");
+		router.replace("/(tabs)/profile/(create)/create");
 	};
 	const onBrowsePressHandler = () => {
-		router.replace("/(tabs)/(profile)/(browse)/browse");
+		router.replace("/(tabs)/profile/(browse)/browse");
 	};
 	return (
 		<View style={NewProgramOptionStyle.body}>

@@ -2,7 +2,7 @@ import { View, Text, Pressable } from "react-native";
 import React, { useContext, useState } from "react";
 import GlobalStyle from "@/style/global/GlobalStyle";
 import { useNavigation } from "@react-navigation/native";
-import { ProfileStackParamList } from "../../app/(tabs)/(profile)/_layout";
+import { ProfileStackParamList } from "../../app/(tabs)/profile/_layout";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { newProgram, validateProgram } from "@/model/ProgramModel";
 import APISingleton from "@/services/APISingleton";

@@ -5,7 +5,7 @@ import { Colors } from "@/style/Colors";
 import { ProgramModel } from "@/model/ProgramModel";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { ProfileStackParamList } from "../../app/(tabs)/(profile)/_layout";
+import { ProfileStackParamList } from "../../app/(tabs)/profile/_layout";
 import APISingleton from "@/services/APISingleton";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
