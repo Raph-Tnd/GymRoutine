@@ -1,6 +1,13 @@
 // ProgramForm.tsx
-import React, { useContext, useEffect } from "react";
-import { TextInput, ScrollView, View, AppState } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import {
+	TextInput,
+	ScrollView,
+	View,
+	AppState,
+	Text,
+	Pressable,
+} from "react-native";
 import SessionForm from "../../../../components/profile/ProgramForm/SessionForm";
 import { SessionModel, newSession } from "@/model/SessionModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
@@ -12,6 +19,8 @@ import GlobalStyle from "@/style/global/GlobalStyle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
 import { setCreatedProgram } from "@/features/program/createdProgramSlice";
+import { GlobalAlert } from "@/components/global/GlobalAlert/GlobalAlert";
+import GlobalAlertStyle from "@/style/global/GlobalAlert/GlobalAlertStyle";
 
 export default function ProgramForm() {
 	const currentCreatedProgram = useSelector(
@@ -58,7 +67,6 @@ export default function ProgramForm() {
 	};
 	return (
 		<View style={GlobalStyle.body}>
-			<CreateProgramHeader />
 			<FlatList
 				style={{ width: "95%" }}
 				contentContainerStyle={ProgramFormStyle.body}
@@ -93,6 +101,7 @@ export default function ProgramForm() {
 					/>
 				}
 			/>
+			<GlobalAlert />
 		</View>
 	);
 }

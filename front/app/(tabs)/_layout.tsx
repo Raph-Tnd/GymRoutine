@@ -77,8 +77,6 @@ export default function TabsLayout() {
 					backgroundColor: Colors.bg_gradient_from,
 				},
 				headerShadowVisible: false,
-				/* Parameter for the header title*/
-				headerTitleAlign: "center",
 				headerStatusBarHeight: 0,
 				tabBarStyle: {
 					backgroundColor: Colors.bg_gradient_from,
@@ -117,6 +115,7 @@ export default function TabsLayout() {
 			<Tabs.Screen
 				name="profile"
 				options={{
+					headerShown: false,
 					title: "Profile",
 					tabBarIcon: ({ focused, color, size }) => (
 						<User

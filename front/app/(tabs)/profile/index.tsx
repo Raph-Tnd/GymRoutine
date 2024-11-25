@@ -19,7 +19,10 @@ interface Props extends StackScreenProps<ProfileStackParamList, "Profile"> {
 }
 
 export default function Profile() {
-	const [programSaved, setProgramSaved] = useState<ProgramModel[]>([]);
+	const currentProgram = useSelector(
+		(state: RootState) => state.currentProgram,
+	);
+
 	const user = useSelector((state: RootState) => state.auth.user);
 	const dispatch = useDispatch<AppDispatch>();
 	/* useEffect(() => {
@@ -60,7 +63,7 @@ export default function Profile() {
 			<FlatList
 				contentContainerStyle={GlobalStyle.listContainer}
 				style={GlobalStyle.list}
-				data={programSaved}
+				data={currentProgram.program}
 				renderItem={({ item }) => (
 					<ProgramShortDisplay program={item} />
 				)}

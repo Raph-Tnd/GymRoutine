@@ -10,6 +10,7 @@ export const mainApi = createApi({
 		connect: builder.query<void, string>({
 			query: (code) => `connectionToken?code=${code}`,
 		}),
+		
 	}),
 });
 

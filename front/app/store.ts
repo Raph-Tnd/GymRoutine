@@ -1,3 +1,4 @@
+import { globalAlertSlice } from "@/features/alert/globalAlertSlice";
 import { mainApi } from "@/features/api/apiSlice";
 import { authSlice } from "@/features/auth/authSlice";
 import { createdProgramSlice } from "@/features/program/createdProgramSlice";
@@ -10,6 +11,7 @@ export const store = configureStore({
 		auth: authSlice.reducer,
 		createdProgram: createdProgramSlice.reducer,
 		currentProgram: currentProgramSlice.reducer,
+		globalAlert: globalAlertSlice.reducer,
 	},
 
 	middleware: (getDefaultMiddleware) =>

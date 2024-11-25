@@ -1,6 +1,10 @@
+import { AppDispatch, RootState } from "@/app/store";
+import { resetAlertMessage } from "@/features/alert/globalAlertSlice";
 import BottomSheetStyle from "@/style/global/BottomSheet/BottomSheetStyle";
 import GlobalAlertStyle from "@/style/global/GlobalAlert/GlobalAlertStyle";
-import { TouchableOpacity, View } from "react-native";
+import GlobalStyle from "@/style/global/GlobalStyle";
+import { useEffect } from "react";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
 	SharedValue,
 	useAnimatedStyle,
@@ -9,28 +13,30 @@ import Animated, {
 	withDelay,
 	withTiming,
 } from "react-native-reanimated";
+import { useDispatch, useSelector } from "react-redux";
 
 export function GlobalAlert({
-	isOpen,
-	toggleSheet,
 	duration = 250,
 	children,
 }: {
-	isOpen: SharedValue<boolean>;
-	toggleSheet: () => void;
 	duration?: number;
 	children?: React.ReactElement;
 }) {
-	const progress = useDerivedValue(() =>
-		withTiming(isOpen.value ? 0 : 1, { duration }),
+	const dispatch = useDispatch<AppDispatch>();
+	const isOpen = useSharedValue<boolean>(false);
+	const globalAlertMessage = useSelector(
+		(state: RootState) => state.globalAlert,
 	);
 	const backdropStyle = useAnimatedStyle(() => ({
-		opacity: 1 - progress.value,
+		opacity: isOpen.value ? withTiming(1, { duration }) : 0,
 		zIndex: isOpen.value
 			? 3
 			: withDelay(duration, withTiming(-1, { duration: 0 })),
 	}));
 
+	useEffect(() => {
+		isOpen.value = globalAlertMessage != "";
+	}, [globalAlertMessage]);
 	return (
 		<>
 			<Animated.View style={[GlobalAlertStyle.backdrop, backdropStyle]}>
@@ -38,11 +44,27 @@ export function GlobalAlert({
 					style={BottomSheetStyle.backdropTouch}
 					onPress={() => {
 						if (isOpen.value) {
-							toggleSheet();
+							dispatch(resetAlertMessage());
 						}
 					}}
 				>
-					<View style={GlobalAlertStyle.sheet}>{children}</View>
+					<View style={GlobalAlertStyle.sheet}>
+						<Text style={GlobalAlertStyle.information}>
+							{globalAlertMessage}
+						</Text>
+						<Pressable
+							style={[GlobalAlertStyle.pressable]}
+							onPress={() => {
+								if (isOpen.value) {
+									dispatch(resetAlertMessage());
+								}
+							}}
+						>
+							<Text style={GlobalStyle.pressableMainLabel}>
+								Ok
+							</Text>
+						</Pressable>
+					</View>
 				</TouchableOpacity>
 			</Animated.View>
 		</>
