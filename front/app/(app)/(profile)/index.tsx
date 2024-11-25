@@ -2,13 +2,13 @@ import { View, Text } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { ProgramModel } from "@/model/ProgramModel";
 import APISingleton from "@/services/APISingleton";
-import ProgramShortDisplay from "../Program/ProgramShortDisplay";
+import ProgramShortDisplay from "../../../components/program/ProgramShortDisplay";
 import { FlatList } from "react-native-gesture-handler";
 import GlobalStyle from "@/style/global/GlobalStyle";
-import NewProgramOption from "./NewProgramOption";
-import { ProfileStackParamList } from "./ProfileStack";
+import NewProgramOption from "../../../components/profile/NewProgramOption";
+import { ProfileStackParamList } from "./_layout";
 import { StackScreenProps } from "@react-navigation/stack";
-import Header from "../global/Header/Header";
+import Header from "../../../components/global/Header/Header";
 import { GoogleSignOut } from "@/services/Auth/GoogleSign";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
@@ -18,11 +18,11 @@ interface Props extends StackScreenProps<ProfileStackParamList, "Profile"> {
 	// other props ...
 }
 
-export default function Profile({ route, navigation }: Props) {
+export default function Profile() {
 	const [programSaved, setProgramSaved] = useState<ProgramModel[]>([]);
 	const user = useSelector((state: RootState) => state.auth.user);
 	const dispatch = useDispatch<AppDispatch>();
-	useEffect(() => {
+	/* useEffect(() => {
 		let unsubscribed = false;
 		const fetchProgram = async () => {
 			if (
@@ -43,7 +43,7 @@ export default function Profile({ route, navigation }: Props) {
 			unsubscribed = true;
 			navigation.setParams({ reload: false });
 		};
-	}, [route.params?.reload]);
+	}, [route.params?.reload]); */
 	return (
 		<View style={GlobalStyle.body}>
 			<Header>

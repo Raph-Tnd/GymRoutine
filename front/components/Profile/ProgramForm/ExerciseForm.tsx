@@ -11,9 +11,9 @@ import Animated, {
 	useSharedValue,
 	withTiming,
 } from "react-native-reanimated";
-import ExerciseExpandedForm from "./ExerciseExpandedForm";
-import { FormDelimiter } from "./ProgramForm";
 import { Colors } from "@/style/Colors";
+import { FormDelimiter } from "@/app/(app)/(profile)/(create)";
+import ExerciseExpandedForm from "./ExerciseExpandedForm";
 
 export default function ExerciseForm({
 	exercise,

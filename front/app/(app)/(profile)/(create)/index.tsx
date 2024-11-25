@@ -1,12 +1,12 @@
 // ProgramForm.tsx
 import React, { useContext, useEffect } from "react";
 import { TextInput, ScrollView, View, AppState } from "react-native";
-import SessionForm from "./SessionForm";
+import SessionForm from "../../../../components/profile/ProgramForm/SessionForm";
 import { SessionModel, newSession } from "@/model/SessionModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
-import AddRemoveFormBloc from "./AddRemoveFormBloc";
+import AddRemoveFormBloc from "../../../../components/profile/ProgramForm/AddRemoveFormBloc";
 import { FlatList } from "react-native-gesture-handler";
-import CreateProgramHeader from "../CreateProgramHeader";
+import CreateProgramHeader from "../../../../components/profile/CreateProgramHeader";
 import { Colors } from "@/style/Colors";
 import GlobalStyle from "@/style/global/GlobalStyle";
 import { useDispatch, useSelector } from "react-redux";

@@ -1,5 +1,5 @@
 import { TextInput } from "react-native";
-import Metric from "./MetricDisplay/Metric";
+import Metric from "./metric/Metric";
 import { MetricModel } from "@/model/MetricModel";
 import { FlatList } from "react-native-gesture-handler";
 import ExerciseExpandedStyle from "@/style/Session/ExerciseDisplay/ExerciseExpandedStyle";

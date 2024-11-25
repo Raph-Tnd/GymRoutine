@@ -1,9 +1,9 @@
 // MetricForm.tsx
+import { FormDelimiter } from "@/app/(app)/(profile)/(create)";
 import { MetricModel } from "@/model/MetricModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import React from "react";
 import { View, TextInput } from "react-native";
-import { FormDelimiter } from "./ProgramForm";
 
 export default function MetricForm({
 	metric,

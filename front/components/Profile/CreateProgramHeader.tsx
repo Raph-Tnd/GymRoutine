@@ -2,7 +2,7 @@ import { View, Text, Pressable } from "react-native";
 import React, { useContext, useState } from "react";
 import GlobalStyle from "@/style/global/GlobalStyle";
 import { useNavigation } from "@react-navigation/native";
-import { ProfileStackParamList } from "./ProfileStack";
+import { ProfileStackParamList } from "../../app/(app)/(profile)/_layout";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { newProgram, validateProgram } from "@/model/ProgramModel";
 import APISingleton from "@/services/APISingleton";
@@ -13,25 +13,23 @@ import Header from "../global/Header/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
 import { setCreatedProgram } from "@/features/program/createdProgramSlice";
+import { useRouter } from "expo-router";
 
-type ProgramFormNavigationProp = StackNavigationProp<
-	ProfileStackParamList,
-	"Profile"
->;
 export default function CreateProgramHeader() {
+	const router = useRouter();
+
 	const [errorAlertMessage, setErrorAlertMessage] = useState("");
 	const user = useSelector((state: RootState) => state.auth.user);
 	const currentCreatedProgram = useSelector(
 		(state: RootState) => state.createdProgram,
 	);
 	const dispatch = useDispatch<AppDispatch>();
-	const route = useNavigation<ProgramFormNavigationProp>();
 	const isGlobalAlertOpen = useSharedValue(false);
 	const toggleSheet = () => {
 		isGlobalAlertOpen.value = !isGlobalAlertOpen.value;
 	};
 	const onBackPressHandler = () => {
-		route.goBack();
+		router.back();
 	};
 	const onSavePressHandler = async () => {
 		if (
@@ -46,7 +44,7 @@ export default function CreateProgramHeader() {
 				})
 			) {
 				dispatch(setCreatedProgram(newProgram(user.user.email)));
-				route.navigate("Profile", { reload: true });
+				router.replace("/(app)/(profile)");
 			} else {
 				setErrorAlertMessage(
 					"You have reached your maximum number of program on this account, remove one or subscribe.",

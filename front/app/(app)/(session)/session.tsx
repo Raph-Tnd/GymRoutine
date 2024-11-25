@@ -1,17 +1,11 @@
 import { View, Text, Pressable } from "react-native";
 import { createContext, useEffect, useLayoutEffect, useState } from "react";
-import Exercise from "./ExerciseDisplay/Exercise";
 import { SessionModel } from "@/model/SessionModel";
 import { FlatList } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 import { MetricModel } from "@/model/MetricModel";
 import { ExerciseModel, exerciseEquals } from "@/model/ExerciseModel";
-import MetricUpdate from "./ExerciseDisplay/MetricDisplay/MetricUpdate";
-import ToolList from "../Tools/ToolList";
 import { ToolModel } from "@/model/ToolModel";
-import ToolDisplay from "../Tools/ToolDisplay";
-import { BottomSheet } from "../global/BottomSheet/BottomSheet";
-import GlobalStyle from "@/style/global/GlobalStyle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
 import {
@@ -23,8 +17,9 @@ import SessionStyle from "@/style/Program/session/SessionStyle";
 import { useNavigation } from "expo-router";
 import { Colors } from "@/style/Colors";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
-import { preventAutoHideAsync } from "expo-splash-screen";
-import { storeData } from "../global/Storage";
+import { storeData } from "@/components/global/Storage";
+import GlobalStyle from "@/style/global/GlobalStyle";
+import Exercise from "@/components/exercise/Exercise";
 
 export type TimerContextType = {
 	currentTimer: number;

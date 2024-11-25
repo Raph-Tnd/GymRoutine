@@ -14,6 +14,7 @@ import { ArrowRight } from "lucide-react-native";
 import { Colors } from "@/style/Colors";
 import LoginStyle from "@/style/LoginStyle";
 import Svg, { Path } from "react-native-svg";
+import { useRouter } from "expo-router";
 
 WebBrowser.maybeCompleteAuthSession();
 function TokenToUser(userInfo: JwtPayload): User {
@@ -40,6 +41,7 @@ function TokenToUser(userInfo: JwtPayload): User {
 }
 
 export function GoogleSign() {
+	const router = useRouter();
 	const dispatch = useDispatch<AppDispatch>();
 	const [request, response, promptAsync] = AuthSession.useIdTokenAuthRequest({
 		webClientId:
@@ -59,6 +61,7 @@ export function GoogleSign() {
 					if (result.isSuccess) {
 						const user = TokenToUser(jwtDecode(id_token));
 						dispatch(setUser(user));
+						router.replace("/");
 					}
 				} catch (error) {
 					console.error("Failed to connect:", error);

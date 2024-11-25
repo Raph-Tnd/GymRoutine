@@ -1,30 +1,23 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import CreateProgramHeader from "../CreateProgramHeader";
+import CreateProgramHeader from "../../../../components/profile/CreateProgramHeader";
 import GlobalStyle from "@/style/global/GlobalStyle";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import BrowseProgramStyle from "@/style/Profile/Browse/BrowseProgramStyle";
 import { ProgramModel } from "@/model/ProgramModel";
-import ProgramShortDisplay from "@/components/Program/ProgramShortDisplay";
+import ProgramShortDisplay from "@/components/program/ProgramShortDisplay";
 import APISingleton from "@/services/APISingleton";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { ProfileStackParamList } from "../ProfileStack";
-import { useNavigation } from "@react-navigation/native";
 import Header from "@/components/global/Header/Header";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store";
-
-type ProgramFormNavigationProp = StackNavigationProp<
-	ProfileStackParamList,
-	"Profile"
->;
+import { useRouter } from "expo-router";
 
 export default function BrowseProgram() {
-	const route = useNavigation<ProgramFormNavigationProp>();
+	const router = useRouter();
 	const user = useSelector((state: RootState) => state.auth.user);
 	const [foundProgram, setFoundProgram] = useState<ProgramModel[]>();
 	const onBackPressHandler = () => {
-		route.goBack();
+		router.back();
 	};
 	const onSearchHandler = async (text: string) => {
 		if (user) {

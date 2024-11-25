@@ -2,21 +2,16 @@ import { View, Pressable, Text } from "react-native";
 import React from "react";
 import NewProgramOptionStyle from "@/style/Profile/NewProgramOptionStyle";
 import { useNavigation } from "@react-navigation/native";
-import { ProfileStackParamList } from "./ProfileStack";
 import { StackNavigationProp } from "@react-navigation/stack";
-
-type ProgramFormNavigationProp = StackNavigationProp<
-	ProfileStackParamList,
-	"ProgramForm"
->;
+import { useRouter } from "expo-router";
 
 export default function NewProgramOption() {
-	const route = useNavigation<ProgramFormNavigationProp>();
+	const router = useRouter();
 	const onCreatePressHandler = () => {
-		route.navigate("ProgramForm");
+		router.replace("/(app)/(profile)/(create)");
 	};
 	const onBrowsePressHandler = () => {
-		route.navigate("BrowseProgram");
+		router.replace("/(app)/(profile)/(browse)");
 	};
 	return (
 		<View style={NewProgramOptionStyle.body}>
