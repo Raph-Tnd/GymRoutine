@@ -19,7 +19,7 @@ export default function TabsLayout() {
 		<Tabs
 			initialRouteName="(session)/session"
 			screenOptions={{
-				headerShown: false,
+				headerTitle: "",
 				headerStyle: {
 					backgroundColor: Colors.bg_gradient_from,
 				},
@@ -34,7 +34,6 @@ export default function TabsLayout() {
 				options={{
 					title: "Home",
 					headerShown: true,
-					headerTitle: "",
 				}}
 			/>
 			<Tabs.Screen name="profile" options={{ title: "Profile" }} />
