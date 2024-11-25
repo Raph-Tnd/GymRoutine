@@ -1,16 +1,67 @@
 import { loadCreatedProgram } from "@/features/program/createdProgramSlice";
-import { loadCurrentProgram } from "@/features/program/currentProgramSlice";
+import {
+	loadCurrentProgram,
+	setSessionIndex,
+} from "@/features/program/currentProgramSlice";
 import { Colors } from "@/style/Colors";
 import { router, Tabs, usePathname } from "expo-router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
-import { Dumbbell, Home, User } from "lucide-react-native";
+import {
+	ChevronLeft,
+	ChevronRight,
+	Dumbbell,
+	Home,
+	User,
+} from "lucide-react-native";
+import GlobalStyle from "@/style/global/GlobalStyle";
+import { Pressable } from "react-native";
 
 export default function TabsLayout() {
 	const user = useSelector((state: RootState) => state.auth.user);
+	const currentProgram = useSelector(
+		(state: RootState) => state.currentProgram,
+	);
 	const pathname = usePathname(); // Get the current path
 	const dispatch = useDispatch<AppDispatch>();
+	const headerLeft = useCallback(() => {
+		return (
+			currentProgram.sessionIndex > 0 && (
+				<Pressable
+					style={GlobalStyle.headerPressable}
+					onPress={() =>
+						dispatch(
+							setSessionIndex(currentProgram.sessionIndex - 1),
+						)
+					}
+				>
+					<ChevronLeft color={Colors.button_icon} />
+				</Pressable>
+			)
+		);
+	}, [currentProgram.program]);
+	const headerRight = useCallback(() => {
+		if (currentProgram.program.sessions.length > 0) {
+			return (
+				currentProgram.sessionIndex <
+					currentProgram.program.sessions.length - 1 && (
+					<Pressable
+						style={GlobalStyle.headerPressable}
+						onPress={() =>
+							dispatch(
+								setSessionIndex(
+									currentProgram.sessionIndex + 1,
+								),
+							)
+						}
+					>
+						<ChevronRight color={Colors.button_icon} />
+					</Pressable>
+				)
+			);
+		}
+	}, [currentProgram.program]);
 	useEffect(() => {
 		if (user?.user != undefined) {
 			dispatch(loadCreatedProgram(user.user.email));
@@ -51,6 +102,8 @@ export default function TabsLayout() {
 							}
 						/>
 					),
+					headerRight: headerRight,
+					headerLeft: headerLeft,
 				}}
 				listeners={{
 					tabPress: (e) => {

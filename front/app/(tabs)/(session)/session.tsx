@@ -120,49 +120,7 @@ export default function Session() {
 			dispatch(updateSession(currentSession));
 		}
 	}, [currentSession]);
-	useLayoutEffect(() => {
-		if (currentProgram.program.sessions.length > 0) {
-			navigation.setOptions({
-				headerLeft: () => {
-					return (
-						currentProgram.sessionIndex > 0 && (
-							<Pressable
-								style={GlobalStyle.headerPressable}
-								onPress={() =>
-									dispatch(
-										setSessionIndex(
-											currentProgram.sessionIndex - 1,
-										),
-									)
-								}
-							>
-								<ChevronLeft color={Colors.button_icon} />
-							</Pressable>
-						)
-					);
-				},
-				headerRight: () => {
-					return (
-						currentProgram.sessionIndex <
-							currentProgram.program.sessions.length - 1 && (
-							<Pressable
-								style={GlobalStyle.headerPressable}
-								onPress={() =>
-									dispatch(
-										setSessionIndex(
-											currentProgram.sessionIndex + 1,
-										),
-									)
-								}
-							>
-								<ChevronRight color={Colors.button_icon} />
-							</Pressable>
-						)
-					);
-				},
-			});
-		}
-	}, [currentProgram]);
+
 	return (
 		<TimerContext.Provider value={{ currentTimer, setCurrentTimer }}>
 			<View style={[GlobalStyle.body, SessionStyle.body]}>
