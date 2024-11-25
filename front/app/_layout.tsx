@@ -18,7 +18,7 @@ function AuthGuard() {
 			router.replace("/(auth)/login");
 		} else if (user && inAuthGroup) {
 			// Redirect to home if accessing auth routes while logged in
-			router.replace("/session");
+			router.replace("/(tabs)/(session)/session");
 		}
 	}, [user, segments]);
 

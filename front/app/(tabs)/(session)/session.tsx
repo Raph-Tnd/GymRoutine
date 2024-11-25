@@ -92,7 +92,7 @@ export default function Session() {
 					),
 				),
 			);
-		} else {
+		} else if (currentProgram.program.sessions.length > 0) {
 			//Store localy and call api when data is saved
 			storeData("currentProgram", JSON.stringify(currentProgram.program));
 			//TODO : call api

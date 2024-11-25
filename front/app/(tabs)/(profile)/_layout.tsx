@@ -12,6 +12,7 @@ export default function ProfileStack() {
 			screenOptions={{
 				headerShown: false,
 			}}
+			initialRouteName="index"
 		>
 			<Stack.Screen name="Profile" />
 			<Stack.Screen name="ProgramForm" />

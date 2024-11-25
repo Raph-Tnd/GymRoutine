@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 
-export default function AppLayout() {
+export default function TabsLayout() {
 	const user = useSelector((state: RootState) => state.auth.user);
 	const dispatch = useDispatch<AppDispatch>();
 	useEffect(() => {
@@ -17,6 +17,7 @@ export default function AppLayout() {
 	}, [user]);
 	return (
 		<Tabs
+			initialRouteName="(session)/session"
 			screenOptions={{
 				headerShown: false,
 				headerStyle: {
@@ -29,9 +30,9 @@ export default function AppLayout() {
 			}}
 		>
 			<Tabs.Screen
-				name="(session)"
+				name="session"
 				options={{
-					title: "Session",
+					title: "Home",
 					headerShown: true,
 					headerTitle: "",
 				}}

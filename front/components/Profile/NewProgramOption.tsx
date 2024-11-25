@@ -1,17 +1,15 @@
 import { View, Pressable, Text } from "react-native";
 import React from "react";
 import NewProgramOptionStyle from "@/style/Profile/NewProgramOptionStyle";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { useRouter } from "expo-router";
 
 export default function NewProgramOption() {
 	const router = useRouter();
 	const onCreatePressHandler = () => {
-		router.replace("/(app)/(profile)/(create)");
+		router.replace("/(tabs)/(profile)/(create)/create");
 	};
 	const onBrowsePressHandler = () => {
-		router.replace("/(app)/(profile)/(browse)");
+		router.replace("/(tabs)/(profile)/(browse)/browse");
 	};
 	return (
 		<View style={NewProgramOptionStyle.body}>

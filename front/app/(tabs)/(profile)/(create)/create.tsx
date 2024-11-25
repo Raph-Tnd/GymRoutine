@@ -56,9 +56,6 @@ export default function ProgramForm() {
 			dispatch(setCreatedProgram({ ...newCreatedProgram }));
 		}
 	};
-	useEffect(() => {
-		console.log(currentCreatedProgram);
-	}, []);
 	return (
 		<View style={GlobalStyle.body}>
 			<CreateProgramHeader />

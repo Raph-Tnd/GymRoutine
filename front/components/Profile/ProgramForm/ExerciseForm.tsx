@@ -12,7 +12,7 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { Colors } from "@/style/Colors";
-import { FormDelimiter } from "@/app/(app)/(profile)/(create)";
+import { FormDelimiter } from "@/app/(tabs)/(profile)/(create)/create";
 import ExerciseExpandedForm from "./ExerciseExpandedForm";
 
 export default function ExerciseForm({
