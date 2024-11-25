@@ -1,10 +1,11 @@
 import { loadCreatedProgram } from "@/features/program/createdProgramSlice";
 import { loadCurrentProgram } from "@/features/program/currentProgramSlice";
 import { Colors } from "@/style/Colors";
-import { router, Tabs, usePathname, useSegments } from "expo-router";
+import { router, Tabs, usePathname } from "expo-router";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
+import { Dumbbell, Home, User } from "lucide-react-native";
 
 export default function TabsLayout() {
 	const user = useSelector((state: RootState) => state.auth.user);
@@ -28,6 +29,12 @@ export default function TabsLayout() {
 				/* Parameter for the header title*/
 				headerTitleAlign: "center",
 				headerStatusBarHeight: 0,
+				tabBarStyle: {
+					backgroundColor: Colors.bg_gradient_from,
+					borderTopWidth: 1,
+					borderColor: Colors.border_color,
+				},
+				tabBarShowLabel: false,
 			}}
 		>
 			<Tabs.Screen
@@ -35,6 +42,15 @@ export default function TabsLayout() {
 				options={{
 					title: "Home",
 					headerShown: true,
+					tabBarIcon: ({ focused, color, size }) => (
+						<Dumbbell
+							color={
+								focused
+									? Colors.color_primary_base
+									: Colors.text_secondary
+							}
+						/>
+					),
 				}}
 				listeners={{
 					tabPress: (e) => {
@@ -47,7 +63,18 @@ export default function TabsLayout() {
 			/>
 			<Tabs.Screen
 				name="profile"
-				options={{ title: "Profile" }}
+				options={{
+					title: "Profile",
+					tabBarIcon: ({ focused, color, size }) => (
+						<User
+							color={
+								focused
+									? Colors.color_primary_base
+									: Colors.text_secondary
+							}
+						/>
+					),
+				}}
 				listeners={{
 					tabPress: (e) => {
 						if (pathname.includes("/profile/")) {
