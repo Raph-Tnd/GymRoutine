@@ -23,7 +23,6 @@ export const Colors = {
 	hover_bg: "rgba(250, 251, 253, 1)", */
 
 	/* Dark mode */
-	bg: "rgba(11, 17, 33, 1)",
 	button_color: "rgba(79, 70, 229, 0.2)",
 	button_icon: "rgba(129, 140, 248, 1)",
 	bg_gradient_from: "rgba(15, 23, 42, 1)",
