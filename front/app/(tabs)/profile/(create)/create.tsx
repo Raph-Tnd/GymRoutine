@@ -1,60 +1,28 @@
-// ProgramForm.tsx
-import React, { useContext, useEffect, useState } from "react";
-import {
-	TextInput,
-	ScrollView,
-	View,
-	AppState,
-	Text,
-	Pressable,
-} from "react-native";
+import { TextInput, View } from "react-native";
 import SessionForm from "../../../../components/profile/ProgramForm/SessionForm";
-import { SessionModel, newSession } from "@/model/SessionModel";
+import { SessionModel } from "@/model/SessionModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
-import AddRemoveFormBloc from "../../../../components/profile/ProgramForm/AddRemoveFormBloc";
+import AddFormBloc from "../../../../components/profile/ProgramForm/AddFormBloc";
 import { FlatList } from "react-native-gesture-handler";
-import CreateProgramHeader from "../../../../components/profile/CreateProgramHeader";
 import { Colors } from "@/style/Colors";
 import GlobalStyle from "@/style/global/GlobalStyle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
-import { setCreatedProgram } from "@/features/program/createdProgramSlice";
+import {
+	addSession,
+	setCreatedProgram,
+	updateProgramName,
+} from "@/features/program/createdProgramSlice";
 import { GlobalAlert } from "@/components/global/GlobalAlert/GlobalAlert";
-import GlobalAlertStyle from "@/style/global/GlobalAlert/GlobalAlertStyle";
 
 export default function ProgramForm() {
 	const currentCreatedProgram = useSelector(
 		(state: RootState) => state.createdProgram,
 	);
 	const dispatch = useDispatch<AppDispatch>();
-
-	const handleProgramNameChange = (name: string) => {
+	const addNewSession = () => {
 		if (currentCreatedProgram) {
-			let newCreatedProgram = currentCreatedProgram;
-			newCreatedProgram.name = name;
-			dispatch(setCreatedProgram({ ...newCreatedProgram }));
-		}
-	};
-
-	const addSession = () => {
-		if (currentCreatedProgram) {
-			let newCreatedProgram = currentCreatedProgram;
-			newCreatedProgram.sessions = [
-				...newCreatedProgram.sessions,
-				newSession(currentCreatedProgram.sessions.length + 1),
-			];
-			dispatch(setCreatedProgram({ ...newCreatedProgram }));
-		}
-	};
-
-	const removeSession = () => {
-		if (currentCreatedProgram) {
-			let newCreatedProgram = currentCreatedProgram;
-			newCreatedProgram.sessions = newCreatedProgram.sessions.splice(
-				0,
-				newCreatedProgram.sessions.length - 1,
-			);
-			dispatch(setCreatedProgram({ ...newCreatedProgram }));
+			dispatch(addSession());
 		}
 	};
 
@@ -68,24 +36,26 @@ export default function ProgramForm() {
 	return (
 		<View style={GlobalStyle.body}>
 			<FlatList
-				style={{ width: "95%" }}
-				contentContainerStyle={ProgramFormStyle.body}
+				style={ProgramFormStyle.body}
+				contentContainerStyle={ProgramFormStyle.bodyContainer}
+				ListHeaderComponentStyle={ProgramFormStyle.programHeader}
 				ListHeaderComponent={
 					<TextInput
 						style={ProgramFormStyle.programLabel}
 						value={currentCreatedProgram.name}
-						onChangeText={handleProgramNameChange}
+						onChangeText={(text: string) =>
+							dispatch(updateProgramName(text))
+						}
 						placeholder="Program name"
 						placeholderTextColor={Colors.red}
 					/>
 				}
-				scrollEnabled={false}
 				data={currentCreatedProgram.sessions}
 				renderItem={({ item, index }) => (
 					<SessionForm
 						key={index}
 						session={item}
-						index={index}
+						sessionIndex={index}
 						onUpdate={(updatedSession) =>
 							updateSession(updatedSession, index)
 						}
@@ -93,19 +63,10 @@ export default function ProgramForm() {
 				)}
 				ListFooterComponentStyle={ProgramFormStyle.programFooter}
 				ListFooterComponent={
-					<AddRemoveFormBloc
-						type={"Session"}
-						addMethod={addSession}
-						removeMethod={removeSession}
-						removeActive={currentCreatedProgram.sessions.length > 1}
-					/>
+					<AddFormBloc type={"Session"} addMethod={addNewSession} />
 				}
 			/>
 			<GlobalAlert />
 		</View>
 	);
-}
-
-export function FormDelimiter() {
-	return <View style={ProgramFormStyle.delimiter} />;
 }

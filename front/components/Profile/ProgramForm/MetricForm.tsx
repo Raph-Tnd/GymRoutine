@@ -1,5 +1,4 @@
 // MetricForm.tsx
-import { FormDelimiter } from "@/app/(tabs)/profile/(create)/create";
 import { MetricModel } from "@/model/MetricModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import React from "react";
@@ -24,7 +23,6 @@ export default function MetricForm({
 				onChangeText={(value) => handleChange("name", value)}
 				placeholder="Metric"
 			/>
-			<FormDelimiter />
 		</View>
 	);
 }

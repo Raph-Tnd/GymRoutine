@@ -6,9 +6,7 @@ import GlobalStyle from "@/style/global/GlobalStyle";
 import { useEffect } from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
-	SharedValue,
 	useAnimatedStyle,
-	useDerivedValue,
 	useSharedValue,
 	withDelay,
 	withTiming,
@@ -16,11 +14,11 @@ import Animated, {
 import { useDispatch, useSelector } from "react-redux";
 
 export function GlobalAlert({
+	validateFunction,
 	duration = 250,
-	children,
 }: {
+	validateFunction?: () => void;
 	duration?: number;
-	children?: React.ReactElement;
 }) {
 	const dispatch = useDispatch<AppDispatch>();
 	const isOpen = useSharedValue<boolean>(false);
@@ -52,18 +50,40 @@ export function GlobalAlert({
 						<Text style={GlobalAlertStyle.information}>
 							{globalAlertMessage}
 						</Text>
-						<Pressable
-							style={[GlobalAlertStyle.pressable]}
-							onPress={() => {
-								if (isOpen.value) {
-									dispatch(resetAlertMessage());
-								}
-							}}
-						>
-							<Text style={GlobalStyle.pressableMainLabel}>
-								Ok
-							</Text>
-						</Pressable>
+						<View style={GlobalAlertStyle.pressableList}>
+							{validateFunction != undefined && (
+								<Pressable
+									style={[
+										GlobalAlertStyle.pressable,
+										GlobalAlertStyle.pressableCancel,
+									]}
+									onPress={() => {
+										if (isOpen.value) {
+											dispatch(resetAlertMessage());
+										}
+									}}
+								>
+									<Text
+										style={GlobalStyle.pressableMainLabel}
+									>
+										Cancel
+									</Text>
+								</Pressable>
+							)}
+
+							<Pressable
+								style={[GlobalAlertStyle.pressable]}
+								onPress={() => {
+									if (isOpen.value) {
+										dispatch(resetAlertMessage());
+									}
+								}}
+							>
+								<Text style={GlobalStyle.pressableMainLabel}>
+									Ok
+								</Text>
+							</Pressable>
+						</View>
 					</View>
 				</TouchableOpacity>
 			</Animated.View>

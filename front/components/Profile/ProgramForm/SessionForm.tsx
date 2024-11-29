@@ -1,80 +1,74 @@
-// SessionForm.tsx
-import React from "react";
-import { View, TextInput } from "react-native";
-import ExerciseForm from "./ExerciseForm";
+import { View, TextInput, Pressable } from "react-native";
 import { SessionModel } from "@/model/SessionModel";
-import { ExerciseModel, newExercise } from "@/model/ExerciseModel";
+import { ExerciseModel } from "@/model/ExerciseModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
-import AddRemoveFormBloc from "./AddRemoveFormBloc";
 import { FlatList } from "react-native-gesture-handler";
+import ExerciseForm from "./ExerciseForm";
+import AddFormBloc from "./AddFormBloc";
+import { Colors } from "@/style/Colors";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store";
+import {
+	addExercise,
+	removeSession,
+	updateSessionName,
+} from "@/features/program/createdProgramSlice";
+import { Trash2 } from "lucide-react-native";
 
 export default function SessionForm({
 	session,
-	index,
+	sessionIndex,
 	onUpdate,
 }: {
 	session: SessionModel;
-	index: number;
+	sessionIndex: number;
 	onUpdate: (updatedSession: SessionModel) => void;
 }) {
-	const handleSessionNameChange = (name: string) => {
-		onUpdate({ ...session, name });
+	const dispatch = useDispatch<AppDispatch>();
+	const updateCurrentSessionName = (name: string) => {
+		dispatch(updateSessionName({ name: name, sessionIndex: sessionIndex }));
 	};
-
-	const addExercise = () => {
-		onUpdate({
-			...session,
-			exercises: [...session.exercises, newExercise()],
-		});
+	const removeCurrentSession = () => {
+		dispatch(removeSession(sessionIndex));
 	};
-
-	const removeExercise = () => {
-		onUpdate({
-			...session,
-			exercises: [
-				...session.exercises.splice(0, session.exercises.length - 1),
-			],
-		});
+	const addNewExercise = () => {
+		dispatch(addExercise(sessionIndex));
 	};
-
-	const updateExercise = (updatedExercise: ExerciseModel, index: number) => {
-		onUpdate({
-			...session,
-			exercises: session.exercises.map((exercise, i) =>
-				i === index ? updatedExercise : exercise,
-			),
-		});
-	};
-
 	return (
-		<View style={ProgramFormStyle.session}>
-			<TextInput
-				style={ProgramFormStyle.sessionLabel}
-				value={session.name}
-				onChangeText={handleSessionNameChange}
-				placeholder={`Session ${index + 1}`}
-				selectTextOnFocus={true}
-			/>
+		<View style={ProgramFormStyle.sessionContainer}>
 			<FlatList
+				style={ProgramFormStyle.session}
+				contentContainerStyle={ProgramFormStyle.exercisesContainer}
+				ListHeaderComponent={
+					<View style={ProgramFormStyle.sessionHeader}>
+						<TextInput
+							style={ProgramFormStyle.sessionLabel}
+							value={session.name}
+							onChangeText={updateCurrentSessionName}
+							placeholder={`Session ${sessionIndex + 1}`}
+							selectTextOnFocus={true}
+							selectionColor={Colors.border_color}
+						/>
+						<Pressable
+							style={ProgramFormStyle.sessionRemove}
+							onPress={removeCurrentSession}
+						>
+							<Trash2 size={16} color={Colors.text_secondary} />
+						</Pressable>
+					</View>
+				}
 				data={session.exercises}
 				renderItem={({ item, index }) => (
 					<ExerciseForm
 						key={index}
 						exercise={item}
-						index={index}
-						onUpdate={(updatedExercise) =>
-							updateExercise(updatedExercise, index)
-						}
+						sessionIndex={sessionIndex}
+						exerciseIndex={index}
 					/>
 				)}
 				ListFooterComponentStyle={ProgramFormStyle.sessionFooter}
 				ListFooterComponent={
-					<AddRemoveFormBloc
-						type={"Exercise"}
-						addMethod={addExercise}
-						removeMethod={removeExercise}
-						removeActive={session.exercises.length > 1}
-					/>
+					<AddFormBloc type={"Exercise"} addMethod={addNewExercise} />
 				}
 			/>
 		</View>

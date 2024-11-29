@@ -1,7 +1,5 @@
-// ExerciseForm.tsx
-import React from "react";
-import { Text, TextInput, Pressable } from "react-native";
-import { ExerciseModel } from "@/model/ExerciseModel";
+import { TextInput, Pressable, View } from "react-native";
+import { ExerciseModel, mandatoryExerciseField } from "@/model/ExerciseModel";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -9,26 +7,48 @@ import Animated, {
 	interpolateColor,
 	useAnimatedStyle,
 	useSharedValue,
-	withTiming,
 } from "react-native-reanimated";
 import { Colors } from "@/style/Colors";
-import { FormDelimiter } from "@/app/(tabs)/profile/(create)/create";
-import ExerciseExpandedForm from "./ExerciseExpandedForm";
+import { Picker } from "@react-native-picker/picker";
+import { Trash2 } from "lucide-react-native";
+import {
+	removeExercise,
+	updateExerciseProp,
+} from "@/features/program/createdProgramSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store";
 
 export default function ExerciseForm({
 	exercise,
-	index,
-	onUpdate,
+	sessionIndex,
+	exerciseIndex,
 }: {
 	exercise: ExerciseModel;
-	index: number;
-	onUpdate: (updatedExercise: ExerciseModel) => void;
+	sessionIndex: number;
+	exerciseIndex: number;
 }) {
-	const handleChange = (
+	const dispatch = useDispatch<AppDispatch>();
+
+	const removeCurrentExercise = () => {
+		dispatch(
+			removeExercise({
+				sessionIndex: sessionIndex,
+				exerciseIndex: exerciseIndex,
+			}),
+		);
+	};
+
+	const updateExercise = (
 		field: keyof ExerciseModel,
 		value: string | number,
 	) => {
-		onUpdate({ ...exercise, [field]: value });
+		dispatch(
+			updateExerciseProp({
+				exerciseProp: { key: field, value: value },
+				sessionIndex: sessionIndex,
+				exerciseIndex: exerciseIndex,
+			}),
+		);
 	};
 	const isPressing = useSharedValue(0);
 	const expandMetrics = useSharedValue(0);
@@ -44,11 +64,11 @@ export default function ExerciseForm({
 			isPressing.value = 0;
 			expandMetrics.value = (expandMetrics.value + 1) % 2;
 		});
-	const expandMetricsAnimatedStyle = useAnimatedStyle(() => {
+	/* const expandMetricsAnimatedStyle = useAnimatedStyle(() => {
 		return {
 			height: withTiming(expandMetrics.value * 40),
 		};
-	});
+	}); */
 	const pressableAnimatedStyle = useAnimatedStyle(() => {
 		return {
 			opacity: interpolate(isPressing.value, [0, 1], [1, 0.8]),
@@ -66,94 +86,161 @@ export default function ExerciseForm({
 				<>
 					<Animated.View
 						style={[
-							ProgramFormStyle.exercise,
+							ProgramFormStyle.exerciseContainerAnimatedView,
 							pressableAnimatedStyle,
 						]}
 					>
-						<TextInput
-							style={ProgramFormStyle.exerciseMainLabel}
-							value={exercise.name}
-							onChangeText={(value) =>
-								handleChange("name", value)
+						{Object.entries(exercise).map((item) => {
+							let key = item[0] as keyof ExerciseModel;
+							let prop = exercise[key];
+							switch (typeof prop) {
+								case "string":
+									switch (key) {
+										case "weightUnit":
+											return (
+												<Picker
+													key={key}
+													selectedValue={prop}
+													onValueChange={(
+														value,
+														index,
+													) => {
+														updateExercise(
+															key,
+															value,
+														);
+													}}
+													style={
+														ProgramFormStyle.exercisePicker
+													}
+												>
+													<Picker.Item
+														label={"kg"}
+														value={"kg"}
+													/>
+													<Picker.Item
+														label={"lbs"}
+														value={"lbs"}
+													/>
+												</Picker>
+											);
+										default:
+											return (
+												<View
+													key={key}
+													style={
+														ProgramFormStyle.exerciseTextInputContainer
+													}
+												>
+													<TextInput
+														style={[
+															ProgramFormStyle.exerciseLabel,
+															key == "name"
+																? ProgramFormStyle.exerciseMainLabel
+																: key == "note"
+																	? ProgramFormStyle.exerciseNoteLabel
+																	: null,
+														]}
+														value={prop}
+														onChangeText={(value) =>
+															updateExercise(
+																key,
+																value,
+															)
+														}
+														placeholder={
+															key == "name"
+																? "Exercise name"
+																: `${item[0]}`
+														}
+														placeholderTextColor={
+															mandatoryExerciseField.includes(
+																key,
+															)
+																? Colors.red
+																: Colors.text_secondary
+														}
+													/>
+													{key == "note" && (
+														<Pressable
+															style={
+																ProgramFormStyle.exerciseRemove
+															}
+															onPress={
+																removeCurrentExercise
+															}
+														>
+															<Trash2
+																size={16}
+																color={
+																	Colors.text_secondary
+																}
+															/>
+														</Pressable>
+													)}
+												</View>
+											);
+									}
+								case "number":
+									if (key != "rmPercentage") {
+										return (
+											<TextInput
+												key={key}
+												style={
+													ProgramFormStyle.exerciseLabel
+												}
+												defaultValue=""
+												value={
+													prop == 0
+														? ""
+														: prop.toString()
+												}
+												onChangeText={(value) => {
+													if (!isNaN(+value)) {
+														updateExercise(
+															key,
+															value == ""
+																? 0
+																: parseInt(
+																		value,
+																	),
+														);
+													}
+												}}
+												placeholder={`${
+													key == "pauseTime"
+														? "pause (sec)"
+														: key
+																.toString()
+																.split(
+																	/(?<![A-Z])(?=[A-Z])/,
+																)
+																.join(" ")
+																.toLowerCase()
+												}`}
+												placeholderTextColor={
+													mandatoryExerciseField.includes(
+														key,
+													)
+														? Colors.red
+														: Colors.text_secondary
+												}
+												keyboardType="numeric"
+											/>
+										);
+									}
+								default:
+									return null;
 							}
-							placeholder={`Exercise ${index + 1}`}
-							placeholderTextColor={Colors.air_force_blue}
-						/>
-						<FormDelimiter />
-						<TextInput
-							style={[
-								ProgramFormStyle.exerciseLabel,
-								exercise.sets == 0
-									? ProgramFormStyle.exerciseLabelPlaceholder
-									: null,
-							]}
-							selectTextOnFocus={true}
-							value={exercise.sets.toString()}
-							onChangeText={(value) =>
-								handleChange("sets", parseInt(value) || 0)
-							}
-							keyboardType="numeric"
-						/>
-						<Text style={ProgramFormStyle.exerciseInputCue}>x</Text>
-						<TextInput
-							style={[
-								ProgramFormStyle.exerciseLabel,
-								exercise.repsPerSet == 0
-									? ProgramFormStyle.exerciseLabelPlaceholder
-									: null,
-							]}
-							selectTextOnFocus={true}
-							value={exercise.repsPerSet.toString()}
-							onChangeText={(value) =>
-								handleChange("repsPerSet", parseInt(value) || 0)
-							}
-							keyboardType="numeric"
-						/>
-						<FormDelimiter />
-						<TextInput
-							style={ProgramFormStyle.exerciseLabel}
-							value={exercise.weight.toString()}
-							onChangeText={(value) =>
-								handleChange("weight", parseFloat(value) || 0)
-							}
-							keyboardType="numeric"
-							placeholder="0"
-							placeholderTextColor={Colors.air_force_blue}
-						/>
-						<TextInput
-							style={ProgramFormStyle.exerciseLabel}
-							value={exercise.weightUnit}
-							onChangeText={(value) =>
-								handleChange("weightUnit", value)
-							}
-							placeholder="Weight Unit)"
-						/>
-						<FormDelimiter />
-						<TextInput
-							style={ProgramFormStyle.exerciseLabel}
-							value={exercise.pauseTime.toString()}
-							onChangeText={(value) =>
-								handleChange("pauseTime", parseInt(value) || 0)
-							}
-							keyboardType="numeric"
-							placeholder="Pause time (sec)"
-						/>
-						<Text
-							style={[
-								ProgramFormStyle.exerciseInputCue,
-								ProgramFormStyle.exerciceInputCueEdge,
-							]}
-						>
-							s
-						</Text>
+						})}
 					</Animated.View>
 				</>
 			</GestureDetector>
-			<Animated.View
+			{/* <Animated.View
 				style={[{ marginBottom: 10 }, expandMetricsAnimatedStyle]}
 			>
 				<ExerciseExpandedForm exercise={exercise} onUpdate={onUpdate} />
-			</Animated.View>
+			</Animated.View> */}
 		</>
 	);
 }

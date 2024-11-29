@@ -3,7 +3,7 @@ import React from "react";
 import { ExerciseModel } from "@/model/ExerciseModel";
 import { MetricModel } from "@/model/MetricModel";
 import MetricForm from "./MetricForm";
-import AddRemoveFormBloc from "./AddRemoveFormBloc";
+import AddFormBloc from "./AddFormBloc";
 import ProgramFormStyle from "@/style/Profile/ProgramFormStyle";
 import { FlatList } from "react-native-gesture-handler";
 
@@ -56,7 +56,7 @@ export default function ExerciseExpandedForm({
 				)}
 				ListFooterComponentStyle={ProgramFormStyle.metricFooter}
 				ListFooterComponent={
-					<AddRemoveFormBloc
+					<AddFormBloc
 						type={"Metric"}
 						addMethod={addMetric}
 						removeMethod={removeMetric}

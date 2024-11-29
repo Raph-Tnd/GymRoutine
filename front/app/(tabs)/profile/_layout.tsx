@@ -1,16 +1,12 @@
 import { AppDispatch, RootState } from "@/app/store";
-import { GlobalAlert } from "@/components/global/GlobalAlert/GlobalAlert";
 import { setAlertMessage } from "@/features/alert/globalAlertSlice";
 import { setCreatedProgram } from "@/features/program/createdProgramSlice";
 import { newProgram, validateProgram } from "@/model/ProgramModel";
 import APISingleton from "@/services/APISingleton";
 import { Colors } from "@/style/Colors";
-import GlobalAlertStyle from "@/style/global/GlobalAlert/GlobalAlertStyle";
 import GlobalStyle from "@/style/global/GlobalStyle";
 import { Stack, useRouter } from "expo-router";
-import { useState } from "react";
 import { Pressable, Text } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
 import { useSelector, useDispatch } from "react-redux";
 
 export type ProfileStackParamList = {
@@ -26,9 +22,6 @@ export default function ProfileStack() {
 		(state: RootState) => state.createdProgram,
 	);
 	const dispatch = useDispatch<AppDispatch>();
-	const onBackPressHandler = () => {
-		router.back();
-	};
 	const onSavePressHandler = async () => {
 		if (
 			user &&

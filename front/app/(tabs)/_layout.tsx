@@ -75,6 +75,7 @@ export default function TabsLayout() {
 				headerTitle: "",
 				headerStyle: {
 					backgroundColor: Colors.bg_gradient_from,
+					borderBottomWidth: 0,
 				},
 				headerShadowVisible: false,
 				headerStatusBarHeight: 0,

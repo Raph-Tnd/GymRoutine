@@ -4,11 +4,11 @@ export interface ExerciseModel {
 	name: string;
 	sets: number;
 	repsPerSet: number;
-	wantedRpe: number | undefined;
+	wantedRpe: number;
 	weight: number;
 	weightUnit: "kg" | "lb";
 	rmPercentage: number;
-	pauseTime: number | undefined;
+	pauseTime: number;
 	metrics: MetricModel[];
 	note: string;
 }
@@ -43,17 +43,19 @@ export function newExercise(): ExerciseModel {
 		name: "",
 		sets: 0,
 		repsPerSet: 0,
-		wantedRpe: undefined,
+		wantedRpe: 0,
 		weight: 0,
 		weightUnit: "kg",
-		pauseTime: undefined,
+		pauseTime: 0,
 		rmPercentage: 0,
 		metrics: [],
 		note: "",
 	};
 }
 
-export function validateExercise(exercise: ExerciseModel): boolean {
+export const mandatoryExerciseField = ["name", "sets", "repsPerSet", "weight"];
+
+export function validateExerciseForm(exercise: ExerciseModel): boolean {
 	return (
 		exercise.name != "" &&
 		exercise.sets > 0 &&

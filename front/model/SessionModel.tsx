@@ -1,4 +1,8 @@
-import { ExerciseModel, newExercise, validateExercise } from "./ExerciseModel";
+import {
+	ExerciseModel,
+	newExercise,
+	validateExerciseForm,
+} from "./ExerciseModel";
 
 export interface SessionModel {
 	name: string;
@@ -16,7 +20,7 @@ export function validateSession(session: SessionModel): boolean {
 	return (
 		session.name != "" &&
 		session.exercises.reduce(
-			(previous, exercise) => previous && validateExercise(exercise),
+			(previous, exercise) => previous && validateExerciseForm(exercise),
 			true,
 		)
 	);
