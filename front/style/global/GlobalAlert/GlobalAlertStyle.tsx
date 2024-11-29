@@ -6,9 +6,9 @@ export default StyleSheet.create({
 	sheet: {
 		backgroundColor: Colors.card_bg,
 		padding: 16,
-		marginTop: "25%",
-		height: "50%",
-		aspectRatio: 3 / 4,
+		marginTop: "50%",
+		height: "40%",
+		width: "95%",
 		borderRadius: 20,
 		borderWidth: 1,
 		borderColor: Colors.border_color,

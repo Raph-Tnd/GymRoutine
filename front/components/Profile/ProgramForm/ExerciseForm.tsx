@@ -189,7 +189,6 @@ export default function ExerciseForm({
 												style={
 													ProgramFormStyle.exerciseLabel
 												}
-												defaultValue=""
 												value={
 													prop == 0
 														? ""

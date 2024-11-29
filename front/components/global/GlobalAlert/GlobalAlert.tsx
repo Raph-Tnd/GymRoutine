@@ -72,7 +72,7 @@ export function GlobalAlert({
 							)}
 
 							<Pressable
-								style={[GlobalAlertStyle.pressable]}
+								style={GlobalAlertStyle.pressable}
 								onPress={() => {
 									if (isOpen.value) {
 										dispatch(resetAlertMessage());
